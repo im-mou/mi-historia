@@ -4,6 +4,7 @@ import Editor               from './components/editor';
 import BackendQuestions		from './components/backend/questions';
 import BackendUsers		from './components/backend/users';
 import Questions		from './components/questions';
+import Settings		from './components/settings';
 
 class App extends ReactHabitat.Bootstrapper {
 
@@ -19,6 +20,7 @@ class App extends ReactHabitat.Bootstrapper {
 		containerBuilder.register(BackendQuestions).as('backend_questions');
 		containerBuilder.register(BackendUsers).as('users');
 		containerBuilder.register(Questions).as('questions');
+		containerBuilder.register(Settings).as('settings');
 
 		// Set the DOM container
 		this.setContainer(containerBuilder.build());

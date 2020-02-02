@@ -77,8 +77,6 @@ class Questions extends React.Component {
             return { question_id: el.id, body: this.state[el.key] };
         });
 
-        console.log(answerList)
-
         const _answers = {
             uuid: this.state.uuid,
             anonymous: this.state.anonymous,
