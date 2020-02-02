@@ -94,13 +94,13 @@ class PostsController extends Controller
     }
 
     public function getAnswers($uuid) {
-        $post = Post::where(['uuid'=>$uuid,'user_id'=>Auth::user()->id])->with('answers')->get()->first();
+        $post = Post::where(['uuid'=>$uuid,'user_id'=>Auth::user()->id])->with('answers')->first();
         $questions = Question::All();
         return response()->json(['post'=>$post, 'questions'=>$questions]);
     }
 
     public function getStoryFromUUID($uuid) {
-        $post = Post::where(['uuid'=>$uuid,'user_id'=>Auth::user()->id])->with('story')->get()->first();
+        $post = Post::where(['uuid'=>$uuid,'user_id'=>Auth::user()->id])->with('story')->first();
         return response()->json($post);
     }
 
@@ -125,10 +125,10 @@ class PostsController extends Controller
         ]);
 
         $updatedValues = [
-            'title' => 'Entrevista con '.Auth::user()->name,
+            'title' => 'Preguntas: '.$time,
             'anonymous' => $validatedPostData['anonymous'],
             'published' => $validatedPostData['published'],
-            'slug' => Str::slug('Entrevista con '.Auth::user()->name),
+            'slug' => Str::slug('Preguntas: '.$time),
             'last_saved' => $time,
         ];
 

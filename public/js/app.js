@@ -82740,6 +82740,7 @@ function (_React$Component) {
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, u.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, u.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, u.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, u.last_login_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, u.last_login_ip), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, _this4.state.usersList[i].admin ? "Yes" : "No"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           className: "form-check-input",
           type: "checkbox",
+          disabled: !i ? 'disabled' : '',
           checked: _this4.state.usersList[i].active ? "checked" : "",
           onChange: function onChange() {
             return _this4.toggleSwitch(u.id, _this4.state.usersList[i].active);
@@ -83139,7 +83140,6 @@ function (_React$Component) {
           body: _this4.state[el.key]
         };
       });
-      console.log(answerList);
       var _answers = {
         uuid: this.state.uuid,
         anonymous: this.state.anonymous,
@@ -83240,6 +83240,274 @@ Questions.propTypes = {
 
 /***/ }),
 
+/***/ "./resources/js/components/settings.jsx":
+/*!**********************************************!*\
+  !*** ./resources/js/components/settings.jsx ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _utils_spanishCityNames__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/spanishCityNames */ "./resources/js/utils/spanishCityNames.js");
+/* harmony import */ var _utils_countryNames__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/countryNames */ "./resources/js/utils/countryNames.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+var Settings =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Settings, _React$Component);
+
+  function Settings(props) {
+    var _this;
+
+    _classCallCheck(this, Settings);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Settings).call(this, props));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this));
+    _this.hasErrorFor = _this.hasErrorFor.bind(_assertThisInitialized(_this));
+    _this.renderErrorFor = _this.renderErrorFor.bind(_assertThisInitialized(_this));
+    _this.state = {
+      name: _this.props.name,
+      surname: _this.props.surname,
+      nationality: _this.props.nationality,
+      city: _this.props.city,
+      arrival_year: _this.props.arrival_year,
+      age_year: _this.props.age_year,
+      errors: []
+    };
+    return _this;
+  }
+
+  _createClass(Settings, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("/api/mis-datos").then(function (response) {
+        if (response.data) {
+          _this2.setState({
+            name: response.data.name,
+            surname: response.data.surname,
+            nationality: response.data.nationality,
+            city: response.data.city,
+            arrival_year: response.data.arrival_year,
+            age_year: response.data.age_year
+          });
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          _this2.setState({
+            errors: error.response.data.errors
+          });
+        }
+      });
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit() {
+      var _this3 = this;
+
+      var datos = {
+        name: this.state.name,
+        surname: this.state.surname,
+        nationality: this.state.nationality,
+        city: this.state.city,
+        arrival_year: this.state.arrival_year,
+        age_year: this.state.age_year
+      };
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/api/mis-datos/guardar', datos).then(function (response) {
+        _this3.setState({
+          errors: []
+        });
+      })["catch"](function (error) {
+        if (error.response) {
+          _this3.setState({
+            errors: error.response.data.errors
+          });
+        }
+      });
+    }
+  }, {
+    key: "handleInputChange",
+    value: function handleInputChange(e) {
+      this.setState(_defineProperty({}, event.target.name, e.target.value));
+    }
+  }, {
+    key: "hasErrorFor",
+    value: function hasErrorFor(field) {
+      return !!this.state.errors[field];
+    }
+  }, {
+    key: "renderErrorFor",
+    value: function renderErrorFor(field) {
+      if (this.hasErrorFor(field)) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "text-danger"
+        }, this.state.errors[field][0]);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      Option = function Option(value, i) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+          key: i
+        }, value);
+      };
+
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-header"
+      }, "Mis Datos"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-body"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "nametextField"
+      }, "Nombre"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        value: this.state.name,
+        name: "name",
+        onChange: this.handleInputChange,
+        type: "text",
+        className: "form-control",
+        placeholder: "First name",
+        id: "nametextField"
+      }), this.renderErrorFor("name"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "lastNametextField"
+      }, "Apellido"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        value: this.state.surname,
+        name: "surname",
+        onChange: this.handleInputChange,
+        type: "text",
+        className: "form-control",
+        placeholder: "Last name",
+        id: "lastNametextField"
+      }), this.renderErrorFor("surname")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "CiudadFormControlSelect1"
+      }, "Tu ciudad"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        name: "city",
+        value: this.state.city,
+        onChange: this.handleInputChange,
+        className: "form-control",
+        id: "CiudadFormControlSelect1"
+      }, _utils_spanishCityNames__WEBPACK_IMPORTED_MODULE_3__["default"].map(Option)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "NacionalidadFormControlSelect1"
+      }, "Nacionalidad"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        name: "nationality",
+        value: this.state.nationality,
+        onChange: this.handleInputChange,
+        className: "form-control",
+        id: "NacionalidadFormControlSelect1"
+      }, _utils_countryNames__WEBPACK_IMPORTED_MODULE_4__["default"].map(Option))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "arrival_yeartextField"
+      }, "A\xF1o de llegada a Barcelona"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        value: this.state.arrival_year,
+        name: "arrival_year",
+        onChange: this.handleInputChange,
+        type: "text",
+        className: "form-control",
+        placeholder: "ej.: 2005",
+        id: "arrival_yeartextField"
+      }), this.renderErrorFor("arrival_year")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "age_yeartextField"
+      }, "A\xF1o de nacimiento"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        value: this.state.age_year,
+        name: "age_year",
+        onChange: this.handleInputChange,
+        type: "text",
+        className: "form-control",
+        placeholder: "ej.: 1994",
+        id: "age_yeartextField"
+      }), this.renderErrorFor("age_year")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-footer"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        onClick: this.handleSubmit,
+        className: "btn btn-primary mb-2"
+      }, "Guardar cambios")));
+    }
+  }]);
+
+  return Settings;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+Settings.defaultProps = {
+  name: '',
+  surname: '',
+  nationality: _utils_countryNames__WEBPACK_IMPORTED_MODULE_4__["default"][0],
+  city: _utils_spanishCityNames__WEBPACK_IMPORTED_MODULE_3__["default"][0],
+  arrival_year: '',
+  age_year: ''
+};
+Settings.propTypes = {
+  name: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  surname: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  nationality: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  city: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  arrival_year: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  age_year: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
+};
+/* harmony default export */ __webpack_exports__["default"] = (Settings);
+
+/***/ }),
+
 /***/ "./resources/js/react-habitat.js":
 /*!***************************************!*\
   !*** ./resources/js/react-habitat.js ***!
@@ -83257,6 +83525,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_backend_questions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/backend/questions */ "./resources/js/components/backend/questions.jsx");
 /* harmony import */ var _components_backend_users__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/backend/users */ "./resources/js/components/backend/users.jsx");
 /* harmony import */ var _components_questions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/questions */ "./resources/js/components/questions.jsx");
+/* harmony import */ var _components_settings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/settings */ "./resources/js/components/settings.jsx");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -83272,6 +83541,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
  // React Habitat requires Object.assign pollyfill for old IE support
+
 
 
 
@@ -83296,7 +83566,8 @@ function (_ReactHabitat$Bootstr) {
     containerBuilder.register(_components_editor__WEBPACK_IMPORTED_MODULE_2__["default"]).as('editor');
     containerBuilder.register(_components_backend_questions__WEBPACK_IMPORTED_MODULE_3__["default"]).as('backend_questions');
     containerBuilder.register(_components_backend_users__WEBPACK_IMPORTED_MODULE_4__["default"]).as('users');
-    containerBuilder.register(_components_questions__WEBPACK_IMPORTED_MODULE_5__["default"]).as('questions'); // Set the DOM container
+    containerBuilder.register(_components_questions__WEBPACK_IMPORTED_MODULE_5__["default"]).as('questions');
+    containerBuilder.register(_components_settings__WEBPACK_IMPORTED_MODULE_6__["default"]).as('settings'); // Set the DOM container
 
     _this.setContainer(containerBuilder.build());
 
@@ -83319,6 +83590,34 @@ var instance = new App(); // Bind the update method onto the window for the dyna
 window.updateHabitat = instance.update.bind(instance); // Export the instance
 
 /* harmony default export */ __webpack_exports__["default"] = (instance);
+
+/***/ }),
+
+/***/ "./resources/js/utils/countryNames.js":
+/*!********************************************!*\
+  !*** ./resources/js/utils/countryNames.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var countryNames = ["España", "Pakistán", "India", "Bangladesh", "Afganistán", "Albania", "Alemania", "Andorra", "Angola", "Anguilla", "Antártida", "Antigua y Barbuda", "Antillas Holandesas", "Arabia Saudita", "Argelia", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaiján", "Bahamas", "Bahrain", "Barbados", "Bélgica", "Belice", "Benin", "Bhutan", "Bielorusia", "Bolivia", "Bosnia Herzegovina", "Botswana", "Brasil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Camboya", "Camerún", "Canadá", "Chad", "Chile", "China", "Chipre", "Colombia", "Comoros", "Congo", "Corea del Norte", "Corea del Sur", "Costa de Marfil", "Costa Rica", "Croacia", "Cuba", "Darussalam", "Dinamarca", "Djibouti", "Dominica", "Ecuador", "Egipto", "El Salvador", "Em. Arabes Un.", "Eritrea", "Eslovaquia", "Eslovenia", "Estados Unidos", "Estonia", "Etiopía", "Fiji", "Filipinas", "Finlandia", "Francia", "Gabón", "Gambia", "Georgia", "Ghana", "Gibraltar", "Grecia", "Grenada", "Groenlandia", "Guadalupe", "Guam", "Guatemala", "Guayana Francesa", "Guinea", "Guinea Ecuatorial", "Guinea-Bissau", "Guyana", "Haití", "Holanda", "Honduras", "Hong Kong", "Hungría", "Indonesia", "Irak", "Irán", "Irlanda", "Islandia", "Islas Cayman", "Islas Cook", "Islas Faroe", "Islas Marianas del Norte", "Islas Marshall", "Islas Solomon", "Islas Turcas y Caicos", "Islas Vírgenes", "Islas Wallis y Futuna", "Israel", "Italia", "Jamaica", "Japón", "Jordania", "Kazajstán", "Kenya", "Kirguistán", "Kiribati", "Kuwait", "Laos", "Lesotho", "Letonia", "Líbano", "Liberia", "Libia", "Liechtenstein", "Lituania", "Luxemburgo", "Macao", "Macedonia", "Madagascar", "Malasia", "Malawi", "Mali", "Malta", "Marruecos", "Martinica", "Mauricio", "Mauritania", "Mayotte", "México", "Micronesia", "Moldova", "Mónaco", "Mongolia", "Montserrat", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Nicaragua", "Níger", "Nigeria", "Noruega", "Nueva Caledonia", "Nueva Zelandia", "Omán", "Panamá", "Papua Nueva Guinea", "Paraguay", "Perú", "Pitcairn", "Polinesia Francesa", "Polonia", "Portugal", "Puerto Rico", "Qatar", "RD Congo", "Reino Unido", "República Centroafricana", "República Checa", "República Dominicana", "Reunión", "Rumania", "Rusia", "Rwanda", "Sahara Occidental", "Saint Pierre y Miquelon", "Samoa", "Samoa Americana", "San Cristóbal y Nevis", "San Marino", "Santa Elena", "Santa Lucía", "Sao Tomé y Príncipe", "Senegal", "Serbia y Montenegro", "Seychelles", "Sierra Leona", "Singapur", "Siria", "Somalia", "Sri Lanka", "Sudáfrica", "Sudán", "Suecia", "Suiza", "Suriname", "Swazilandia", "Taiwán", "Uruguay"];
+/* harmony default export */ __webpack_exports__["default"] = (countryNames);
+
+/***/ }),
+
+/***/ "./resources/js/utils/spanishCityNames.js":
+/*!************************************************!*\
+  !*** ./resources/js/utils/spanishCityNames.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var spanishCityNames = ["Barcelona", "L’Hospitalet de Llobregat", "Badalona", "Cornellà", "Sabadell", "Terrassa", "Vilanova i la Geltrú", "Ávila", "A Coruña", "Albacete", "Alcalá de Guadaira", "Alcalá de Henares", "Alcoy", "Alcántara", "Alcázar de San Juan", "Algeciras", "Alicante", "Almadén", "Almendralejo", "Almería", "Alzira", "Andújar", "Antequera", "Aranjuez", "Arcos de la Frontera", "Arucas", "Astorga", "Avilés", "Badajoz", "Barakaldo", "Baza", "Bilbao", "Bujalance", "Burgos", "Cabañaquinta", "Cabra", "Calahorra", "Cangas de Narcea", "Caravaca", "Carballo", "Carmona", "Cartagena", "Castellón de la Plana", "Chiclana de la Frontera", "Cieza", "Ciudad Real", "Ciudad Rodrigo", "Covadonga", "Coín", "Cuenca", "Cáceres", "Cádiz", "Córdoba", "Don Benito", "Donostia–San Sebastián", "Dos Hermanas", "Ecija", "Eibar", "El Escorial", "El Puerto de Santa María", "Elche", "Elda", "Ferrol", "Funes", "Gandía", "Getafe", "Getxo", "Gijón", "Girona", "Granada", "Granollers", "Guadalajara", "Guadalupe", "Guadix", "Guernica", "Hellín", "Huelva", "Huesca", "Irun", "Jaca", "Jaén", "Jerez de la Frontera", "Jumilla", "La Línea", "La Orotava", "Las Palmas", "Lebrija", "León", "Linares", "Lleida", "Llívia", "Logroño", "Lora del Río", "Lorca", "Luarca", "Lucena", "Lugo", "Madrid", "Manresa", "Marchena", "Martos", "Mataró", "Maó", "Melilla", "Mieres", "Miranda de Ebro", "Mondoñedo", "Monforte de Lemos", "Montilla", "Morón de la Frontera", "Motril", "Murcia", "Málaga", "Mérida", "Orihuela", "Ortigueira", "Osuna", "Ourense", "Oviedo", "Palencia", "Palma", "Pamplona", "Peñarroya-Pueblonuevo", "Plasencia", "Pola de Siero", "Ponferrada", "Pontevedra", "Portugalete", "Priego de Córdoba", "Puente-Genil", "Puerto Real", "Puertollano", "Requena", "Reus", "Ribeira", "Roncesvalles", "Ronda", "Sagunto", "Salamanca", "San Fernando", "San Ildefonso", "San Martín del Rey Aurelio", "Sanlúcar de Barrameda", "Santa Coloma de Gramenet", "Santa Cruz de Tenerife", "Santander", "Santiago de Compostela", "Santurtzi", "Segovia", "Sestao", "Sevilla", "Simancas", "Soria", "Sueca", "Talavera de la Reina", "Tarragona", "Telde", "Teruel", "Tineo", "Toledo", "Tomelloso", "Toro", "Torrelavega", "Torrent", "Tortosa", "Trujillo", "Úbeda", "Utrera", "Valdepeñas", "Valencia", "Valladolid", "Vic", "Vigo", "Vilagarcía de Arousa", "Vilalba", "Villanueva de la Serena", "Villarreal", "Villarrobledo", "Villaviciosa", "Villena", "Vitoria-Gasteiz", "Yecla", "Zamora", "Zaragoza"];
+/* harmony default export */ __webpack_exports__["default"] = (spanishCityNames);
 
 /***/ }),
 

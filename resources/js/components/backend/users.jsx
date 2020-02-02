@@ -82,6 +82,7 @@ class BackendUsers extends React.Component {
                                 <input
                                     className="form-check-input"
                                     type="checkbox"
+                                    disabled={!i?'disabled':''}
                                     checked={
                                         this.state.usersList[i].active
                                             ? "checked"

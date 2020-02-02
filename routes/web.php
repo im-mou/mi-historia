@@ -22,15 +22,19 @@ Route::get('/responder-a-preguntas')->middleware('post.create:question');
 Route::get('/responder-a-preguntas/{id?}', 'PostsController@respondToQuestions')->name('post.question')->middleware('post.filter');
 
 Route::get('/mis-datos', 'SettingsController@index');
+Route::get('/api/mis-datos/', 'SettingsController@getData');
+Route::post('/api/mis-datos/guardar', 'SettingsController@saveData');
 
 Route::get('api/historia/{uuid}', 'PostsController@getStoryFromUUID');
 Route::post('api/historia/guardar', 'PostsController@saveStory');
 Route::post('api/historia/publicar', 'PostsController@publishStory');
 
+
+// 
 Route::get('api/preguntas/', 'PostsController@getQuestions');
 Route::get('api/respuestas/{uuid}', 'PostsController@getAnswers');
 Route::post('api/respuestas/guardar', 'PostsController@saveAnswers');
-Route::post('api/respuestas/publicar', 'PostsController@saveAnswers');
+Route::post('api/respuestas/publicar', 'PostsController@publishAnswers');
 
 //Route::get('/home', 'HomeController@index')->name('home');
 
