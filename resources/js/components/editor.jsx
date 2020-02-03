@@ -1,6 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import TimeAgo from 'react-timeago';
+import spanishStrings from 'react-timeago/lib/language-strings/es';
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
+const formatter = buildFormatter(spanishStrings);
 
 class Editor extends React.Component {
     constructor(props) {
@@ -21,6 +25,7 @@ class Editor extends React.Component {
             anonymous: this.props.anonymous,
             published: this.props.published,
             lastSaved: this.props.lastSaved,
+            lastSavedTime: this.props.lastSavedTime,
             errors: [],
         };
     }
@@ -51,25 +56,27 @@ class Editor extends React.Component {
 
     handlePublish() {
         this.setState({
-            published: true,
-        },()=>{
-            this.handleRequest('publicar')
+            published: this.handleRequest('publicar'),
         })
     }
 
     handleRequest(url, msg='') {
+        let res = false;
         const story = {
             title: this.state.title,
             body: this.state.body,
             anonymous: this.state.anonymous,
             published: this.state.published,
             uuid: this.state.uuid,
+            action: url === 'publicar' // true if url = publicar; false if url = guardar
         };
         axios
             .post('/api/historia/'+url, story)
             .then(response => {
+                res = true; // set to true fot the return value
                 this.setState({
-                    lastSaved: msg+response.data.msg,
+                    lastSaved: msg,
+                    lastSavedTime: new Date(response.data.msg),
                     errors:[]
                 });
             })
@@ -80,12 +87,14 @@ class Editor extends React.Component {
                     });
                 }
             });
+        return res;
     }
 
     handleInputChange(e) {
         this.setState({
             [event.target.name]: e.target.value,
-            lastSaved: 'Hay cambios sin guardar'
+            lastSaved: 'Hay cambios sin guardar',
+            lastSavedTime: null,
         });
     }
 
@@ -112,8 +121,11 @@ class Editor extends React.Component {
     render() {
         return (
             <div>
-                <div>{this.state.published? 'Publicada':'Sin Publicar'}</div>
-                <div>{this.state.lastSaved}</div>
+                <div>{this.state.published? 'Publicada':''}</div>
+                <div>
+                    {this.state.lastSaved}
+                    <TimeAgo date={this.state.lastSavedTime} formatter={formatter} />
+                </div>
                 <div className="form-group">
                     <div className="custom-control custom-switch">
                         <input
@@ -183,7 +195,8 @@ Editor.defaultProps = {
     body: "",
     anonymous: false,
     published: false,
-    lastSaved: ''
+    lastSaved: '',
+    lastSavedTime: null
 };
 
 Editor.propTypes = {
@@ -193,6 +206,7 @@ Editor.propTypes = {
     anonymous: PropTypes.bool,
     published: PropTypes.bool,
     lastSaved: PropTypes.string,
+    lastSavedTime: PropTypes.string,
 };
 
 export default Editor;

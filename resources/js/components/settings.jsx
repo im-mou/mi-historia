@@ -20,6 +20,7 @@ class Settings extends React.Component {
             city: this.props.city,
             arrival_year: this.props.arrival_year,
             age_year: this.props.age_year,
+            feedback: this.props.feedback,
             errors: []
         };
     }
@@ -28,8 +29,7 @@ class Settings extends React.Component {
         axios
             .get("/api/mis-datos")
             .then(response => {
-                if(response.data)
-                {
+                if (response.data) {
                     this.setState({
                         name: response.data.name,
                         surname: response.data.surname,
@@ -63,7 +63,8 @@ class Settings extends React.Component {
             .post('/api/mis-datos/guardar', datos)
             .then(response => {
                 this.setState({
-                    errors:[]
+                    feedback: response.data.msg,
+                    errors: []
                 });
             })
             .catch(error => {
@@ -96,7 +97,7 @@ class Settings extends React.Component {
     }
 
     render() {
-        Option = function(value,i) {
+        Option = function (value, i) {
             return <option key={i}>{value}</option>;
         };
         return (
@@ -156,7 +157,8 @@ class Settings extends React.Component {
                 </div>
 
                 <div className="card-footer">
-                <   button type="button" onClick={this.handleSubmit} className="btn btn-primary mb-2">Guardar cambios</button>
+                    <button type="button" onClick={this.handleSubmit} className="btn btn-primary mb-2">Guardar cambios</button>
+                    <div className="text-secondary">{this.state.feedback}</div>
                 </div>
             </div>
         );
@@ -164,12 +166,13 @@ class Settings extends React.Component {
 }
 
 Settings.defaultProps = {
-    name:'',
-    surname:'',
-    nationality:countryname[0],
-    city:cityname[0],
-    arrival_year:'',
-    age_year:'',
+    name: '',
+    surname: '',
+    nationality: countryname[0],
+    city: cityname[0],
+    arrival_year: '',
+    age_year: '',
+    feedback: '',
 };
 
 Settings.propTypes = {
@@ -179,6 +182,7 @@ Settings.propTypes = {
     city: PropTypes.string,
     arrival_year: PropTypes.string,
     age_year: PropTypes.string,
+    feedback: PropTypes.string,
 };
 
 export default Settings;

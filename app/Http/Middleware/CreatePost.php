@@ -18,6 +18,26 @@ class CreatePost
      */
     public function handle($request, Closure $next, $type)
     {
+
+        // check if there is a post with no content
+        $recentEmptyPost = Post::where([
+            'type' => $type,
+            'user_id' => auth()->user()->id,
+        ]);
+
+        // open the first post that has no content
+        if($type === 'story') {
+            $post = $recentEmptyPost->doesntHave('story')->first();
+        } elseif($type === 'question') {
+            $post = $recentEmptyPost->doesntHave('answers')->first();
+        }
+
+        // check if an empty post was found
+        if(!is_null($post)) {
+            return redirect()->route('post.'.$type, $post->uuid);
+        }
+
+        // if there is no old empty post then create a new one
         $post = Post::create([
             'type' => $type,
             'user_id' => auth()->user()->id,
@@ -31,11 +51,8 @@ class CreatePost
             } else {
                 return redirect()->route('/')->withMessage("Ha occurido un error!");
             }
-
         } else {
             return redirect()->route('/')->withMessage("Ha occurido un error!");
         }
-
-        //return $next($request);
     }
 }

@@ -56,6 +56,7 @@ class PostsController extends Controller
             'body' => 'required',
             'anonymous' => 'required|boolean',
             'published' => 'required|boolean',
+            'action' => 'required|boolean', // false = guardar; true = publicar
         ]);
 
         $updatedValues = [
@@ -81,7 +82,7 @@ class PostsController extends Controller
                 $post->update($updatedValues);
                 $res = response()->json([
                         'result'=>true, 
-                        'msg'=> $validatedPostData['published'] ? $msg : $time
+                        'msg'=>  $validatedPostData['action'] ? $msg : $time
                     ]);
             }
         }
