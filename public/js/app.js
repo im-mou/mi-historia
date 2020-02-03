@@ -78490,6 +78490,397 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/react-timeago/lib/dateParser.js":
+/*!******************************************************!*\
+  !*** ./node_modules/react-timeago/lib/dateParser.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = dateParser;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
+function dateParser(date) {
+  var parsed = new Date(date);
+  if (!Number.isNaN(parsed.valueOf())) {
+    return parsed;
+  }
+
+  var parts = String(date).match(/\d+/g);
+  if (parts == null || parts.length <= 2) {
+    return parsed;
+  } else {
+    var _parts$map = parts.map(function (x) {
+      return parseInt(x);
+    }),
+        _parts$map2 = _toArray(_parts$map),
+        firstP = _parts$map2[0],
+        secondP = _parts$map2[1],
+        restPs = _parts$map2.slice(2);
+
+    var correctedParts = [firstP, secondP - 1].concat(_toConsumableArray(restPs));
+    var isoDate = new Date(Date.UTC.apply(Date, _toConsumableArray(correctedParts)));
+    return isoDate;
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/react-timeago/lib/defaultFormatter.js":
+/*!************************************************************!*\
+  !*** ./node_modules/react-timeago/lib/defaultFormatter.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = defaultFormatter;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var React = _interopRequireWildcard(_react);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function defaultFormatter(value, unit, suffix) {
+  if (value !== 1) {
+    unit += 's';
+  }
+  return value + ' ' + unit + ' ' + suffix;
+}
+
+/***/ }),
+
+/***/ "./node_modules/react-timeago/lib/formatters/buildFormatter.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/react-timeago/lib/formatters/buildFormatter.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = buildFormatter;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var React = _interopRequireWildcard(_react);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+// If the numbers array is present, format numbers with it,
+// otherwise just cast the number to a string and return it
+var normalizeNumber = function normalizeNumber(numbers, value) {
+  return numbers && numbers.length === 10 ? String(value).split('').map(function (digit) {
+    return digit.match(/^[0-9]$/) ? numbers[parseInt(digit)] : digit;
+  }).join('') : String(value);
+};
+
+// Take a string or a function that takes number of days and returns a string
+// and provide a uniform API to create string parts
+
+
+var normalizeFn = function normalizeFn(value, distanceMillis, numbers) {
+  return function (stringOrFn) {
+    return typeof stringOrFn === 'function' ? stringOrFn(value, distanceMillis).replace(/%d/g, normalizeNumber(numbers, value)) : stringOrFn.replace(/%d/g, normalizeNumber(numbers, value));
+  };
+};
+
+function buildFormatter(strings) {
+  return function formatter(value, unit, suffix, epochMiliseconds, _nextFormmater, now) {
+    var current = now();
+    // convert weeks to days if strings don't handle weeks
+    if (unit === 'week' && !strings.week && !strings.weeks) {
+      var _days = Math.round(Math.abs(epochMiliseconds - current) / (1000 * 60 * 60 * 24));
+      value = _days;
+      unit = 'day';
+    }
+
+    // create a normalize function for given value
+    var normalize = normalizeFn(value, current - epochMiliseconds, strings.numbers != null ? strings.numbers : undefined);
+
+    // The eventual return value stored in an array so that the wordSeparator can be used
+    var dateString = [];
+
+    // handle prefixes
+    if (suffix === 'ago' && strings.prefixAgo) {
+      dateString.push(normalize(strings.prefixAgo));
+    }
+    if (suffix === 'from now' && strings.prefixFromNow) {
+      dateString.push(normalize(strings.prefixFromNow));
+    }
+
+    // Handle Main number and unit
+    var isPlural = value > 1;
+    if (isPlural) {
+      var stringFn = strings[unit + 's'] || strings[unit] || '%d ' + unit;
+      dateString.push(normalize(stringFn));
+    } else {
+      var _stringFn = strings[unit] || strings[unit + 's'] || '%d ' + unit;
+      dateString.push(normalize(_stringFn));
+    }
+
+    // Handle Suffixes
+    if (suffix === 'ago' && strings.suffixAgo) {
+      dateString.push(normalize(strings.suffixAgo));
+    }
+    if (suffix === 'from now' && strings.suffixFromNow) {
+      dateString.push(normalize(strings.suffixFromNow));
+    }
+
+    // join the array into a string and return it
+    var wordSeparator = typeof strings.wordSeparator === 'string' ? strings.wordSeparator : ' ';
+    return dateString.join(wordSeparator);
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/react-timeago/lib/index.js":
+/*!*************************************************!*\
+  !*** ./node_modules/react-timeago/lib/index.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var React = _interopRequireWildcard(_react);
+
+var _defaultFormatter = __webpack_require__(/*! ./defaultFormatter */ "./node_modules/react-timeago/lib/defaultFormatter.js");
+
+var _defaultFormatter2 = _interopRequireDefault(_defaultFormatter);
+
+var _dateParser = __webpack_require__(/*! ./dateParser */ "./node_modules/react-timeago/lib/dateParser.js");
+
+var _dateParser2 = _interopRequireDefault(_dateParser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Component = React.Component;
+
+
+// Just some simple constants for readability
+var MINUTE = 60;
+var HOUR = MINUTE * 60;
+var DAY = HOUR * 24;
+var WEEK = DAY * 7;
+var MONTH = DAY * 30;
+var YEAR = DAY * 365;
+
+var TimeAgo = function (_Component) {
+  _inherits(TimeAgo, _Component);
+
+  function TimeAgo() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, TimeAgo);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TimeAgo.__proto__ || Object.getPrototypeOf(TimeAgo)).call.apply(_ref, [this].concat(args))), _this), _this.isStillMounted = false, _this.tick = function (refresh) {
+      if (!_this.isStillMounted || !_this.props.live) {
+        return;
+      }
+
+      var then = (0, _dateParser2.default)(_this.props.date).valueOf();
+      if (!then) {
+        console.warn('[react-timeago] Invalid Date provided');
+        return;
+      }
+
+      var now = _this.props.now();
+      var seconds = Math.round(Math.abs(now - then) / 1000);
+
+      var unboundPeriod = seconds < MINUTE ? 1000 : seconds < HOUR ? 1000 * MINUTE : seconds < DAY ? 1000 * HOUR : 0;
+      var period = Math.min(Math.max(unboundPeriod, _this.props.minPeriod * 1000), _this.props.maxPeriod * 1000);
+
+      if (period) {
+        if (_this.timeoutId) {
+          clearTimeout(_this.timeoutId);
+        }
+        _this.timeoutId = setTimeout(_this.tick, period);
+      }
+
+      if (!refresh) {
+        _this.forceUpdate();
+      }
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(TimeAgo, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.isStillMounted = true;
+      if (this.props.live) {
+        this.tick(true);
+      }
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(lastProps) {
+      if (this.props.live !== lastProps.live || this.props.date !== lastProps.date) {
+        if (!this.props.live && this.timeoutId) {
+          clearTimeout(this.timeoutId);
+        }
+        this.tick();
+      }
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.isStillMounted = false;
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = undefined;
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      /* eslint-disable no-unused-vars */
+      var _props = this.props,
+          date = _props.date,
+          formatter = _props.formatter,
+          Komponent = _props.component,
+          live = _props.live,
+          minPeriod = _props.minPeriod,
+          maxPeriod = _props.maxPeriod,
+          title = _props.title,
+          now = _props.now,
+          passDownProps = _objectWithoutProperties(_props, ['date', 'formatter', 'component', 'live', 'minPeriod', 'maxPeriod', 'title', 'now']);
+      /* eslint-enable no-unused-vars */
+
+
+      var then = (0, _dateParser2.default)(date).valueOf();
+      if (!then) {
+        return null;
+      }
+      var timeNow = now();
+      var seconds = Math.round(Math.abs(timeNow - then) / 1000);
+      var suffix = then < timeNow ? 'ago' : 'from now';
+
+      var _ref2 = seconds < MINUTE ? [Math.round(seconds), 'second'] : seconds < HOUR ? [Math.round(seconds / MINUTE), 'minute'] : seconds < DAY ? [Math.round(seconds / HOUR), 'hour'] : seconds < WEEK ? [Math.round(seconds / DAY), 'day'] : seconds < MONTH ? [Math.round(seconds / WEEK), 'week'] : seconds < YEAR ? [Math.round(seconds / MONTH), 'month'] : [Math.round(seconds / YEAR), 'year'],
+          _ref3 = _slicedToArray(_ref2, 2),
+          value = _ref3[0],
+          unit = _ref3[1];
+
+      var passDownTitle = typeof title === 'undefined' ? typeof date === 'string' ? date : (0, _dateParser2.default)(date).toISOString().substr(0, 16).replace('T', ' ') : title;
+
+      var spreadProps = Komponent === 'time' ? Object.assign({}, passDownProps, {
+        dateTime: (0, _dateParser2.default)(date).toISOString()
+      }) : passDownProps;
+
+      var nextFormatter = _defaultFormatter2.default.bind(null, value, unit, suffix);
+
+      return React.createElement(
+        Komponent,
+        _extends({}, spreadProps, { title: passDownTitle }),
+        formatter(value, unit, suffix, then, nextFormatter, now)
+      );
+    }
+  }]);
+
+  return TimeAgo;
+}(Component);
+
+TimeAgo.displayName = 'TimeAgo';
+TimeAgo.defaultProps = {
+  live: true,
+  component: 'time',
+  minPeriod: 0,
+  maxPeriod: Infinity,
+  formatter: _defaultFormatter2.default,
+  now: function now() {
+    return Date.now();
+  }
+};
+exports.default = TimeAgo;
+
+/***/ }),
+
+/***/ "./node_modules/react-timeago/lib/language-strings/es.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/react-timeago/lib/language-strings/es.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+// Spanish
+var strings = {
+  prefixAgo: 'hace',
+  prefixFromNow: 'dentro de',
+  suffixAgo: '',
+  suffixFromNow: '',
+  seconds: 'menos de un minuto',
+  minute: 'un minuto',
+  minutes: 'unos %d minutos',
+  hour: 'una hora',
+  hours: '%d horas',
+  day: 'un día',
+  days: '%d días',
+  month: 'un mes',
+  months: '%d meses',
+  year: 'un año',
+  years: '%d años'
+};
+exports.default = strings;
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react.development.js":
 /*!*****************************************************!*\
   !*** ./node_modules/react/cjs/react.development.js ***!
@@ -82778,6 +83169,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_timeago__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-timeago */ "./node_modules/react-timeago/lib/index.js");
+/* harmony import */ var react_timeago__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_timeago__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_timeago_lib_language_strings_es__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-timeago/lib/language-strings/es */ "./node_modules/react-timeago/lib/language-strings/es.js");
+/* harmony import */ var react_timeago_lib_language_strings_es__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_timeago_lib_language_strings_es__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_timeago_lib_formatters_buildFormatter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-timeago/lib/formatters/buildFormatter */ "./node_modules/react-timeago/lib/formatters/buildFormatter.js");
+/* harmony import */ var react_timeago_lib_formatters_buildFormatter__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_timeago_lib_formatters_buildFormatter__WEBPACK_IMPORTED_MODULE_5__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -82801,6 +83198,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
+
+var formatter = react_timeago_lib_formatters_buildFormatter__WEBPACK_IMPORTED_MODULE_5___default()(react_timeago_lib_language_strings_es__WEBPACK_IMPORTED_MODULE_4___default.a);
 
 var Editor =
 /*#__PURE__*/
@@ -82827,6 +83228,7 @@ function (_React$Component) {
       anonymous: _this.props.anonymous,
       published: _this.props.published,
       lastSaved: _this.props.lastSaved,
+      lastSavedTime: _this.props.lastSavedTime,
       errors: []
     };
     return _this;
@@ -82860,46 +83262,49 @@ function (_React$Component) {
   }, {
     key: "handlePublish",
     value: function handlePublish() {
-      var _this3 = this;
-
       this.setState({
-        published: true
-      }, function () {
-        _this3.handleRequest('publicar');
+        published: this.handleRequest('publicar')
       });
     }
   }, {
     key: "handleRequest",
     value: function handleRequest(url) {
-      var _this4 = this;
+      var _this3 = this;
 
       var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      var res = false;
       var story = {
         title: this.state.title,
         body: this.state.body,
         anonymous: this.state.anonymous,
         published: this.state.published,
-        uuid: this.state.uuid
+        uuid: this.state.uuid,
+        action: url === 'publicar' // true if url = publicar; false if url = guardar
+
       };
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/api/historia/' + url, story).then(function (response) {
-        _this4.setState({
-          lastSaved: msg + response.data.msg,
+        res = true; // set to true fot the return value
+
+        _this3.setState({
+          lastSaved: msg,
+          lastSavedTime: new Date(response.data.msg),
           errors: []
         });
       })["catch"](function (error) {
         if (error.response) {
-          _this4.setState({
+          _this3.setState({
             errors: error.response.data.errors
           });
         }
       });
+      return res;
     }
   }, {
     key: "handleInputChange",
     value: function handleInputChange(e) {
       var _this$setState;
 
-      this.setState((_this$setState = {}, _defineProperty(_this$setState, event.target.name, e.target.value), _defineProperty(_this$setState, "lastSaved", 'Hay cambios sin guardar'), _this$setState));
+      this.setState((_this$setState = {}, _defineProperty(_this$setState, event.target.name, e.target.value), _defineProperty(_this$setState, "lastSaved", 'Hay cambios sin guardar'), _defineProperty(_this$setState, "lastSavedTime", null), _this$setState));
     }
   }, {
     key: "toggleSwitch",
@@ -82926,7 +83331,10 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.published ? 'Publicada' : 'Sin Publicar'), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.lastSaved), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.published ? 'Publicada' : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.lastSaved, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_timeago__WEBPACK_IMPORTED_MODULE_3___default.a, {
+        date: this.state.lastSavedTime,
+        formatter: formatter
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "custom-control custom-switch"
@@ -82985,7 +83393,8 @@ Editor.defaultProps = {
   body: "",
   anonymous: false,
   published: false,
-  lastSaved: ''
+  lastSaved: '',
+  lastSavedTime: null
 };
 Editor.propTypes = {
   uuid: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
@@ -82993,7 +83402,8 @@ Editor.propTypes = {
   body: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
   anonymous: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.bool,
   published: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.bool,
-  lastSaved: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
+  lastSaved: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  lastSavedTime: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
 };
 /* harmony default export */ __webpack_exports__["default"] = (Editor);
 
@@ -83305,6 +83715,7 @@ function (_React$Component) {
       city: _this.props.city,
       arrival_year: _this.props.arrival_year,
       age_year: _this.props.age_year,
+      feedback: _this.props.feedback,
       errors: []
     };
     return _this;
@@ -83349,6 +83760,7 @@ function (_React$Component) {
       };
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/api/mis-datos/guardar', datos).then(function (response) {
         _this3.setState({
+          feedback: response.data.msg,
           errors: []
         });
       })["catch"](function (error) {
@@ -83481,7 +83893,9 @@ function (_React$Component) {
         type: "button",
         onClick: this.handleSubmit,
         className: "btn btn-primary mb-2"
-      }, "Guardar cambios")));
+      }, "Guardar cambios"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "text-secondary"
+      }, this.state.feedback)));
     }
   }]);
 
@@ -83494,7 +83908,8 @@ Settings.defaultProps = {
   nationality: _utils_countryNames__WEBPACK_IMPORTED_MODULE_4__["default"][0],
   city: _utils_spanishCityNames__WEBPACK_IMPORTED_MODULE_3__["default"][0],
   arrival_year: '',
-  age_year: ''
+  age_year: '',
+  feedback: ''
 };
 Settings.propTypes = {
   name: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
@@ -83502,7 +83917,8 @@ Settings.propTypes = {
   nationality: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
   city: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
   arrival_year: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
-  age_year: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
+  age_year: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  feedback: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
 };
 /* harmony default export */ __webpack_exports__["default"] = (Settings);
 
@@ -83639,8 +84055,8 @@ var spanishCityNames = ["Barcelona", "L’Hospitalet de Llobregat", "Badalona", 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Applications/MAMP/htdocs/mihistoria/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Applications/MAMP/htdocs/mihistoria/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\xampp\htdocs\mi-historira\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\mi-historira\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

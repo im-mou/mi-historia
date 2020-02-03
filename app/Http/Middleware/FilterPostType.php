@@ -27,7 +27,11 @@ class FilterPostType
         }
 
         $uuid = $request->segment(2);
-        if(is_null(Post::where(['uuid' => $uuid,'type' => $type, 'user_id'=>Auth::user()->id])->first())) {
+        if(is_null(Post::where([
+            'uuid' => $uuid,
+            'type' => $type,
+            'user_id'=>Auth::user()->id
+            ])->first())) {
             return abort(404);
         }
         return $next($request);
