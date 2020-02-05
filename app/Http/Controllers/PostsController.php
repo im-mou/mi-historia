@@ -10,6 +10,7 @@ use App\Answer;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Mews\Purifier\Purifier;
 
 class PostsController extends Controller
 {
@@ -53,14 +54,16 @@ class PostsController extends Controller
 
         $validatedPostData = $request->validate([
             'uuid' => 'required',
+            'title' => 'required',
             'body' => 'required',
+            'bodyjson' => 'required',
             'anonymous' => 'required|boolean',
             'published' => 'required|boolean',
             'action' => 'required|boolean', // false = guardar; true = publicar
         ]);
 
         $updatedValues = [
-            'title' => $request->input('title'),
+            'title' => $validatedPostData['title'],
             'last_saved' => $time,
             'anonymous' => $validatedPostData['anonymous'],
             'slug' => Str::slug($request->input('title')),
@@ -75,7 +78,7 @@ class PostsController extends Controller
             // create the story
             $story = Story::updateOrCreate(
                 ['post_id' => $post->id],
-                ['body' => $validatedPostData['body']]
+                ['body' => clean($validatedPostData['body']), 'bodyjson' => $validatedPostData['bodyjson']]
             );
 
             if (!is_null($story)) {

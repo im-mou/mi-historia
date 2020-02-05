@@ -1,10 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import TimeAgo from 'react-timeago';
-import spanishStrings from 'react-timeago/lib/language-strings/es';
-import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
+import {
+    DefaultButton,
+    PrimaryButton,
+    Stack,
+    Toggle,
+    Text,
+    CommandButton,
+} from "office-ui-fabric-react";
+import { SuccessAlert, ErrorAlert } from "./include/alert";
+import { initializeIcons } from "@uifabric/icons";
+import { convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+
+import TimeAgo from "react-timeago";
+import spanishStrings from "react-timeago/lib/language-strings/es";
+import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 const formatter = buildFormatter(spanishStrings);
+
+import EditorComponent from "../editor/editorComponent";
+
+initializeIcons();
+const stackTokens = { childrenGap: 10 };
+const menuProps = {
+    items: [
+        {
+            key: "removePost",
+            text: "Eliminar Historia",
+            iconProps: { iconName: "Delete" }
+        }
+    ],
+    directionalHintFixed: true
+};
+const SettingsIcon = { iconName: "Settings" };
 
 class Editor extends React.Component {
     constructor(props) {
@@ -17,6 +46,8 @@ class Editor extends React.Component {
         this.toggleSwitch = this.toggleSwitch.bind(this);
         this.hasErrorFor = this.hasErrorFor.bind(this);
         this.renderErrorFor = this.renderErrorFor.bind(this);
+        this.handleEditorChange = this.handleEditorChange.bind(this);
+        this.getBodydata = this.getBodydata.bind(this);
 
         this.state = {
             uuid: this.props.uuid,
@@ -27,57 +58,29 @@ class Editor extends React.Component {
             lastSaved: this.props.lastSaved,
             lastSavedTime: this.props.lastSavedTime,
             errors: [],
+            dataLoaded: false
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
+        let body = "";
+        let title = "";
         axios
-            .get("/api/historia/"+this.state.uuid)
+            .get("/api/historia/" + this.state.uuid)
             .then(response => {
+                if (response.data.story !== null) {
+                    body = response.data.story.bodyjson;
+                }
+                if (response.data.title !== null) {
+                    title = response.data.title;
+                }
+
                 this.setState({
-                    title: response.data.title,
-                    body: response.data.story.body,
+                    title: title,
+                    body: body,
                     anonymous: response.data.anonymous,
                     published: response.data.published,
-                })
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.setState({
-                        errors: error.response.data.errors
-                    });
-                }
-            });
-    }
-
-    handleSave(){
-        this.handleRequest('guardar','Último guardado: ')
-    }
-
-    handlePublish() {
-        this.setState({
-            published: this.handleRequest('publicar'),
-        })
-    }
-
-    handleRequest(url, msg='') {
-        let res = false;
-        const story = {
-            title: this.state.title,
-            body: this.state.body,
-            anonymous: this.state.anonymous,
-            published: this.state.published,
-            uuid: this.state.uuid,
-            action: url === 'publicar' // true if url = publicar; false if url = guardar
-        };
-        axios
-            .post('/api/historia/'+url, story)
-            .then(response => {
-                res = true; // set to true fot the return value
-                this.setState({
-                    lastSaved: msg,
-                    lastSavedTime: new Date(response.data.msg),
-                    errors:[]
+                    dataLoaded: true
                 });
             })
             .catch(error => {
@@ -87,14 +90,88 @@ class Editor extends React.Component {
                     });
                 }
             });
-        return res;
+    }
+
+    handleSave() {
+        this.handleRequest("guardar", "Último guardado: ");
+    }
+
+    handlePublish() {
+        this.handleRequest("publicar")
+    }
+
+    handleRequest(url, msg = "") {
+        let bodyData = this.getBodydata(this.state.body);
+
+        const story = {
+            title: this.state.title,
+            body: bodyData.html,
+            bodyjson: bodyData.json,
+            anonymous: this.state.anonymous,
+            published: this.state.published,
+            uuid: this.state.uuid,
+            action: url === "publicar" // true if url = publicar; false if url = guardar
+        };
+        axios
+            .post("/api/historia/" + url, story)
+            .then(response => {
+                this.setState({
+                    lastSaved: msg,
+                    lastSavedTime: new Date(response.data.msg),
+                    errors: [],
+                    published: url === "publicar" ? true : this.state.published
+                });
+            })
+            .catch(error => {
+                if (error.response) {
+                    this.setState({
+                        errors: error.response.data.errors
+                    });
+                }
+            });
     }
 
     handleInputChange(e) {
+        let updateErrors = this.state.errors;
+        updateErrors[event.target.name] = "";
         this.setState({
             [event.target.name]: e.target.value,
-            lastSaved: 'Hay cambios sin guardar',
+            lastSaved: "Hay cambios sin guardar",
             lastSavedTime: null,
+            errors: updateErrors
+        });
+    }
+
+
+    getBodydata(editorState) {
+        let empty = false;
+        let dataObject = {};
+        const raw = convertToRaw(editorState.getCurrentContent());
+        const rawJSON = JSON.stringify(raw);
+        let EditorsJSONBlocks = JSON.parse(rawJSON);
+
+        empty = EditorsJSONBlocks.blocks.map(block => {
+            return block.text.trim() === "";
+        });
+
+        const unique = _.uniq(empty);
+
+        if (unique.length === 1 && unique[0]) {
+            dataObject = { html: "", json: "" };
+        } else {
+            dataObject = { html: draftToHtml(raw), json: rawJSON };
+        }
+
+        return dataObject;
+    }
+    handleEditorChange(editorState) {
+        let updateErrors = this.state.errors;
+        updateErrors["body"] = "";
+        this.setState({
+            body: editorState,
+            lastSaved: "Hay cambios sin guardar",
+            lastSavedTime: null,
+            errors: updateErrors
         });
     }
 
@@ -111,91 +188,112 @@ class Editor extends React.Component {
     renderErrorFor(field) {
         if (this.hasErrorFor(field)) {
             return (
-                <div className="alert alert-danger" role="alert">
+                <ErrorAlert>
                     {this.state.errors[field][0]}
-                </div>
+                </ErrorAlert>
             );
         }
     }
 
     render() {
         return (
-            <div>
-                <div>{this.state.published? 'Publicada':''}</div>
-                <div>
-                    {this.state.lastSaved}
-                    <TimeAgo date={this.state.lastSavedTime} formatter={formatter} />
+            <>
+                <div className="controlBar-alert">
+                    {
+                    this.state.published ? 
+                    <SuccessAlert isMultiline={true}>
+                        Tu historia ha sido enviada para una revisión antes de ser publicada!
+                        Muchas gracias por compartir. Siempre estamos aquí para escuharte.
+                    </SuccessAlert>
+                    : ""}
                 </div>
-                <div className="form-group">
-                    <div className="custom-control custom-switch">
-                        <input
-                            checked={this.state.anonymous ? "checked" : ""}
+
+                <Stack
+                    horizontal
+                    minHeight="50"
+                    horizontalAlign="space-between"
+                >
+                    <Stack
+                        horizontalAlign="start"
+                        verticalAlign="bottom"
+                        tokens={stackTokens}
+                    >
+                        <Toggle
+                            label=" "
+                            onText="Anonymous"
+                            offText="Anonymous"
+                            checked={!!this.state.anonymous}
                             onChange={this.toggleSwitch}
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="anonymousSwitch"
                         />
-                        <label
-                            className="custom-control-label"
-                            htmlFor="anonymousSwitch"
+                    </Stack>
+                    <Stack
+                        horizontal
+                        horizontalAlign="end"
+                        verticalAlign="center"
+                        tokens={stackTokens}
+                    >
+                        <Text
+                            variant="small"
+                            styles={{ root: { color: "#666666" } }}
                         >
-                            Anonymous
-                        </label>
-                    </div>
-                    <button
-                        onClick={this.handleSave}
-                        className="btn btn-secondary btn-sm"
-                    >
-                        Guardar
-                    </button>
-                    <button
-                        onClick={this.handlePublish}
-                        className="btn btn-success btn-sm"
-                    >
-                        Guardar y Publicar
-                    </button>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="titulo">Título</label>
+                            {this.state.lastSaved}
+                            <TimeAgo
+                                date={this.state.lastSavedTime}
+                                formatter={formatter}
+                            />
+                        </Text>
+                        <DefaultButton
+                            text="Guardar"
+                            onClick={this.handleSave}
+                            allowDisabledFocus
+                        />
+                        <PrimaryButton
+                            text="Guardar y Publicar"
+                            onClick={this.handlePublish}
+                            allowDisabledFocus
+                        />
+                        <CommandButton
+                            iconProps={SettingsIcon}
+                            menuProps={menuProps}
+                        />
+                    </Stack>
+                </Stack>
+
+                <div className="big-input-container">
                     <input
                         type="text"
-                        className="form-control"
+                        className="form-control big-input"
                         name="title"
-                        id="exampleInputEmail1"
+                        autoComplete="off"
                         aria-describedby="tituloHelp"
-                        placeholder="Título de tu historia"
+                        placeholder="Título de tu escrito"
                         onChange={this.handleInputChange}
                         value={this.state.title}
                     />
-                    <small id="tituloHelp" className="form-text text-muted">
-                        Este será el título de tu escrito, no es obligatorio
-                        pero se recomienda poner uno.
-                    </small>
+                    {this.renderErrorFor("title")}
                 </div>
-                <div className="form-group">
-                    <label htmlFor="body">Tu historia</label>
-                    <textarea
-                        className="form-control"
-                        id="body"
-                        rows="3"
-                        name="body"
-                        onChange={this.handleInputChange}
-                        value={this.state.body}
+
+                {this.state.dataLoaded ? (
+                    <EditorComponent
+                        onChange={this.handleEditorChange}
+                        body={this.state.body}
                     />
-                    {this.renderErrorFor("body")}
-                </div>
-            </div>
+                ) : (
+                    ""
+                )}
+                {this.renderErrorFor("body")}
+            </>
         );
     }
 }
 
 Editor.defaultProps = {
-    uuid: _.last((new URL(window.location.href)+'').split("/")),
+    uuid: _.last((new URL(window.location.href) + "").split("/")),
     title: "",
     body: "",
     anonymous: false,
     published: false,
-    lastSaved: '',
+    lastSaved: "",
     lastSavedTime: null
 };
 
@@ -206,7 +304,7 @@ Editor.propTypes = {
     anonymous: PropTypes.bool,
     published: PropTypes.bool,
     lastSaved: PropTypes.string,
-    lastSavedTime: PropTypes.string,
+    lastSavedTime: PropTypes.string
 };
 
 export default Editor;

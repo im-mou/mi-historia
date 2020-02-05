@@ -1,0 +1,33 @@
+// header style
+.navbar{
+    padding: 30px;
+    .logo{
+        color: $logo-color;
+        font-family: $font-family-wide;
+        font-size: 18px;
+    }
+    .nav {
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: normal;
+        .item {
+            display: inline;
+            width: 25%;
+            text-align: center;
+            color: $customThemeSecondary;
+            
+            &.active {
+                font-weight:900;
+                color: $customThemePrimary;
+
+                &:hover {
+                    color: darken($color: $customThemePrimary, $amount: 10)
+                }
+            }
+
+            &:hover {
+                color: darken($color: $customThemeSecondary, $amount: 10)
+            }
+        }
+    }
+}

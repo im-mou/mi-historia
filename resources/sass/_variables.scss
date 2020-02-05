@@ -1,8 +1,6 @@
-// Body
-$body-bg: #f8fafc;
-
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
+$font-family-wide: "Heading Pro Wide", sans-serif;
+$font-family-sans-serif: "Segoe UI", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
@@ -17,3 +15,71 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+
+// microsoft fabric ui theme pallet
+$themePrimary: #304e60;
+$themeLighterAlt: #f4f7f9;
+$themeLighter: #d3dfe6;
+$themeLight: #b0c4d0;
+$themeTertiary: #708ea0;
+$themeSecondary: #416074;
+$themeDarkAlt: #2c4657;
+$themeDark: #253c4a;
+$themeDarker: #1b2c36;
+$neutralLighterAlt: #eee8db;
+$neutralLighter: #eae4d8;
+$neutralLight: #e1dbcf;
+$neutralQuaternaryAlt: #d1ccc1;
+$neutralQuaternary: #c8c3b8;
+$neutralTertiaryAlt: #c0bbb1;
+$neutralTertiary: #c2c2c2;
+$neutralSecondary: #858585;
+$neutralPrimaryAlt: #4b4b4b;
+$neutralPrimary: #333333;
+$neutralDark: #272727;
+$black: #1d1d1d;
+$white: #F5EFE1;
+
+$customThemePrimary: #033B5B;
+$customThemeSecondary: #FBAE79;
+
+// Body
+$body-bg: $white;
+
+//header
+$logo-color: $customThemePrimary;
+
+
+// fonts
+@font-face {
+    font-family: "Segoe UI";
+    font-weight: 200;
+    src: url("../fonts/SegoeUI/segoeuil.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Segoe UI";
+    font-weight: 300;
+    src: url("../fonts/SegoeUI/segoeuisl.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Segoe UI";
+    font-weight: 400;
+    src: url("../fonts/SegoeUI/segoeui.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Segoe UI";
+    font-weight: 700;
+    src: url("../fonts/SegoeUI/seguisb.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Segoe UI";
+    font-weight: 900;
+    src: url("../fonts/SegoeUI/segoeuib.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Heading Pro Wide";
+    font-weight: 400;
+    src: url("../fonts/heading-pro-wide/Heading-Pro-Wide-ExtraBold-trial.ttf") format("truetype");
+}
+

@@ -1,7 +1,11 @@
 @extends('layouts.default')
 @section('content')
-    
-    <a class="btn btn-success" href="/contar-mi-historia">Quiero contar mi historia</a>
-    <a class="btn btn-success" href="/responder-a-preguntas">Quiero responder a preguntas</a>
 
+    <div class="ms-Grid" dir="ltr">
+        <div class="ms-Grid-row">
+            <div class="ms-Grid-col ms-sm12 crear-historia">
+                <div data-component="contar-historia"></div>
+            </div>
+        </div>
+    </div>
 @stop
