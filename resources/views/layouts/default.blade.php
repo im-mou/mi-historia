@@ -2,7 +2,6 @@
 <html>
 <head>
     @include('includes.head')
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 <div class="container">
