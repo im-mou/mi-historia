@@ -12,7 +12,9 @@
 }
 .big-input-container {
     margin-top: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #aaa;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 
     &:hover {
         background-color: darken($color: $white, $amount: 2);
@@ -33,9 +35,7 @@
 
         //reset
         border: none;
-        border-bottom: 1px solid transparent;
-        border-top-left-radius: 2px;
-        border-top-right-radius: 2px;
+        // border-bottom: 1px solid transparent;
         background-image:none;
         background-color:transparent;
         -webkit-box-shadow: none;
