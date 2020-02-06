@@ -246,7 +246,9 @@ a {
 
 .big-input-container {
   margin-top: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid #aaa;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
 }
 
 .big-input-container:hover {
@@ -264,9 +266,6 @@ a {
   height: 60px;
   padding: 0 15px;
   border: none;
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
   background-image: none;
   background-color: transparent;
   box-shadow: none;

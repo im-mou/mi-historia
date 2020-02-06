@@ -8,8 +8,9 @@ import {
     PrimaryButton,
     Stack,
     TextField,
-    Dropdown
+    Dropdown,
 } from "office-ui-fabric-react";
+import { MotionAnimations, MotionDurations } from '@uifabric/fluent-theme';
 
 const elementsStyles = { root: { height: 70 } };
 const innerStackTokens = { childrenGap: 20 };
@@ -194,7 +195,7 @@ class Settings extends React.Component {
                 <Stack
                     horizontal
                     horizontalAlign="space-between"
-                    styles={{ root: { paddingTop: 20 } }}
+                    styles={{ root: { paddingTop: 20} }}
                 >
                     <Stack.Item>
                         <PrimaryButton
@@ -204,6 +205,7 @@ class Settings extends React.Component {
                         />
                     </Stack.Item>
                 </Stack>
+
             </>
         );
     }
