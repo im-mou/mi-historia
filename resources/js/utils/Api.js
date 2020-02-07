@@ -19,10 +19,26 @@ async function saveAnswers({url,code}) {
 	return data;
 }
 
+async function getUserData() {
+	const { data } = await axios.get(`/api/mis-datos`);
+	return data;
+}
+
+async function saveUserData({code}) {
+	const { data } = await axios({
+		url: `/api/mis-datos/guardar`,
+		method: 'post',
+		data: code 
+	});
+	return data;
+}
+
 const Api = {
 	getPosts,
 	getQuestions,
-	saveAnswers
+	saveAnswers,
+	getUserData,
+	saveUserData
 };
 
 export default Api;

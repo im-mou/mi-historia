@@ -10,6 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-@if (request()->is('mis-datos'))
+<!-- @if (request()->is('mis-datos'))
 <style>body,.ms-TextField-fieldGroup,.ms-Dropdown-title{background-color: #fff !important;}</style>
-@endif
+@endif -->
+<script type="text/javascript" src="{{ asset('js/global.js') }}"></script>

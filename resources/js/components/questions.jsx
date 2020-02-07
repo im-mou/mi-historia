@@ -181,6 +181,7 @@ class Questions extends React.Component {
                             name={`question_${q.id}`}
                             onChange={this.handleInputChange}
                             value={this.state["question_" + q.id]}
+                            placeholder="Escribe aqui tu respuesta..."
                         />
                     ))}
                 </Stack>

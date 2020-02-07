@@ -1,8 +1,55 @@
 //responder-preguntas
-.responder-preguntas{
+.responder-preguntas {
     .page-header {
         height: 20vh;
-        text-align: center; 
+        text-align: center;
         margin-bottom: 0px;
+    }
+
+    .ms-TextField {
+        font-family: "Georgia", serif;
+        font-weight: normal;
+        color: #304e60;
+        line-height: 1.2;
+
+        .ms-Label {
+            text-transform: capitalize;
+            font-family: "Georgia", serif;
+            font-weight: normal;
+            font-size: 20px;
+            color: lighten($color: $black, $amount: 20);
+            padding: 15px 10px;
+            line-height: 1.2;
+
+            border: 1px solid #ccc;
+            border-radius: 3px 3px 0 0;
+            border-bottom: 0;
+        }
+        .ms-TextField-fieldGroup {
+            font-size: 18px;
+            padding: 10px 5px;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border: 1px solid #ccc;
+
+            &:hover {
+                background-color: darken($color: $white, $amount: 3);
+            }
+        }
+        &.is-active {
+            .ms-TextField-fieldGroup {
+                //background-color: white;
+                background-color: darken($color: $white, $amount: 3);
+                box-shadow: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132),
+                    0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108);
+
+                &::after {
+                    border: none;
+                    border-radius: 3px;
+                }
+            }
+        }
     }
 }
