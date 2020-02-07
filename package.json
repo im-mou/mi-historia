@@ -26,7 +26,6 @@
     },
     "dependencies": {
         "@uifabric/fluent-theme": "^7.1.14",
-        "antd": "^3.26.8",
         "babel-polyfill": "^6.26.0",
         "draft-js": "^0.11.4",
         "draftjs-to-html": "^0.9.1",
