@@ -1,16 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+
+import { UserDataShimmer } from "../Shimmers";
+
 import cityname from "../Utils/spanishCityNames";
 import countryname from "../Utils/countryNames";
+
 import { SuccessAlert, ErrorAlert } from "./include/alert";
 import {
     PrimaryButton,
     Stack,
     TextField,
-    Dropdown,
+    Dropdown
 } from "office-ui-fabric-react";
-import { MotionAnimations, MotionDurations } from '@uifabric/fluent-theme';
+
+import Api from "../Utils/Api";
 
 const elementsStyles = { root: { height: 70 } };
 const innerStackTokens = { childrenGap: 20 };
@@ -23,51 +27,27 @@ class Settings extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.hasErrorFor = this.hasErrorFor.bind(this);
         this.renderErrorFor = this.renderErrorFor.bind(this);
+        this.updateErrors = this.updateErrors.bind(this);
 
         this.state = {
             name: this.props.name,
             surname: this.props.surname,
-            nationality: this.props.nationality,
-            city: this.props.city,
+            nationality: countryname[0],
+            city: cityname[0],
             arrival_year: this.props.arrival_year,
             age_year: this.props.age_year,
             feedback: this.props.feedback,
+            dataLoaded: this.props.dataLoaded,
             errors: []
         };
     }
 
     componentDidMount() {
-        axios
-            .get("/api/mis-datos")
-            .then(response => {
-                if (response.data) {
-                    this.setState({
-                        name: response.data.name,
-                        surname: response.data.surname,
-                        nationality: {
-                            key: response.data.nationality,
-                            text: response.data.nationality
-                        },
-                        city: {
-                            key: response.data.city,
-                            text: response.data.city
-                        },
-                        arrival_year: response.data.arrival_year,
-                        age_year: response.data.age_year
-                    });
-                }
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.setState({
-                        errors: error.response.data.errors
-                    });
-                }
-            });
+        this.getUserData();
     }
 
-    handleSubmit() {
-        let datos = {
+    async handleSubmit() {
+        let code = {
             name: this.state.name,
             surname: this.state.surname,
             nationality: this.state.nationality.key,
@@ -75,21 +55,57 @@ class Settings extends React.Component {
             arrival_year: this.state.arrival_year,
             age_year: this.state.age_year
         };
-        axios
-            .post("/api/mis-datos/guardar", datos)
-            .then(response => {
-                this.setState({
-                    feedback: response.data.msg,
-                    errors: []
-                });
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.setState({
-                        errors: error.response.data.errors
-                    });
-                }
+        this.saveData(Api.saveUserData, { code });
+    }
+
+    async saveData(apiMethod, ...args) {
+        try {
+            const response = await apiMethod(...args);
+            this.setState({
+                feedback: response.msg,
+                errors: []
             });
+        } catch (error) {
+            if (error.response) {
+                this.updateErrors(error.response.data);
+            }
+        }
+    }
+
+    async getUserData() {
+        // function to fetch data from api and catch error
+        this.updateUserState(await Api.getUserData()).catch(error => {
+            if (error.response) {
+                this.updateErrors(error.response.data);
+            }
+        });
+    }
+
+    async updateUserState(data) {
+        // function dedicated to update state.
+        if (data) {
+            this.setState({
+                name: data.name,
+                surname: data.surname,
+                nationality: {
+                    key: data.nationality,
+                    text: data.nationality
+                },
+                city: {
+                    key: data.city,
+                    text: data.city
+                },
+                arrival_year: data.arrival_year,
+                age_year: data.age_year
+            });
+        }
+    }
+
+    updateErrors(data) {
+        this.setState({
+            errors: data.errors,
+            feedback: ""
+        });
     }
 
     handleInputChange(event, data) {
@@ -119,93 +135,98 @@ class Settings extends React.Component {
                     ""
                 )}
 
-                <Stack horizontal tokens={innerStackTokens}>
-                    <Stack.Item grow>
-                        <TextField
-                            label="Nombre"
-                            title="name"
-                            placeholder="Escribe tu nombre"
-                            value={this.state.name}
-                            onChange={this.handleInputChange}
-                            styles={elementsStyles}
-                        />
-                        {this.renderErrorFor("name")}
+                {/* show shimmer is data is not loaded */}
+                {!this.state.dataLoaded ? (
+                    <UserDataShimmer />
+                ) : (
+                    <>
+                        <Stack horizontal tokens={innerStackTokens}>
+                            <Stack.Item grow>
+                                <TextField
+                                    label="Nombre"
+                                    title="name"
+                                    placeholder="Escribe tu nombre"
+                                    value={this.state.name}
+                                    onChange={this.handleInputChange}
+                                    styles={elementsStyles}
+                                />
+                                {this.renderErrorFor("name")}
 
-                        <Dropdown
-                            label="Tu ciudad"
-                            title="city"
-                            selectedKey={
-                                this.state.city
-                                    ? this.state.city.key
-                                    : undefined
-                            }
-                            onChange={this.handleInputChange}
-                            placeholder="Escoje tu ciudad"
-                            options={cityname}
-                            styles={elementsStyles}
-                        />
+                                <Dropdown
+                                    label="Tu ciudad"
+                                    title="city"
+                                    selectedKey={
+                                        this.state.city
+                                            ? this.state.city.key
+                                            : undefined
+                                    }
+                                    onChange={this.handleInputChange}
+                                    placeholder="Escoje tu ciudad"
+                                    options={cityname}
+                                    styles={elementsStyles}
+                                />
 
-                        <TextField
-                            label="Año de nacimiento"
-                            title="age_year"
-                            placeholder="ej.: 1994"
-                            value={this.state.age_year}
-                            onChange={this.handleInputChange}
-                            styles={elementsStyles}
-                        />
-                        {this.renderErrorFor("age_year")}
-                    </Stack.Item>
-                    <Stack.Item grow>
-                        <TextField
-                            label="Apellido"
-                            title="surname"
-                            placeholder="Escribe tu apellido"
-                            value={this.state.surname}
-                            onChange={this.handleInputChange}
-                            styles={elementsStyles}
-                        />
-                        {this.renderErrorFor("surname")}
+                                <TextField
+                                    label="Año de nacimiento"
+                                    title="age_year"
+                                    placeholder="ej.: 1994"
+                                    value={this.state.age_year}
+                                    onChange={this.handleInputChange}
+                                    styles={elementsStyles}
+                                />
+                                {this.renderErrorFor("age_year")}
+                            </Stack.Item>
+                            <Stack.Item grow>
+                                <TextField
+                                    label="Apellido"
+                                    title="surname"
+                                    placeholder="Escribe tu apellido"
+                                    value={this.state.surname}
+                                    onChange={this.handleInputChange}
+                                    styles={elementsStyles}
+                                />
+                                {this.renderErrorFor("surname")}
 
-                        <Dropdown
-                            label="Nacionalidad"
-                            title="nationality"
-                            selectedKey={
-                                this.state.nationality
-                                    ? this.state.nationality.key
-                                    : undefined
-                            }
-                            onChange={this.handleInputChange}
-                            placeholder="Escoje tu país de origen"
-                            options={countryname}
-                            styles={elementsStyles}
-                        />
+                                <Dropdown
+                                    label="Nacionalidad"
+                                    title="nationality"
+                                    selectedKey={
+                                        this.state.nationality
+                                            ? this.state.nationality.key
+                                            : undefined
+                                    }
+                                    onChange={this.handleInputChange}
+                                    placeholder="Escoje tu país de origen"
+                                    options={countryname}
+                                    styles={elementsStyles}
+                                />
 
-                        <TextField
-                            label="Año de llegada a Barcelona"
-                            title="arrival_year"
-                            placeholder="ej.: 2005"
-                            value={this.state.arrival_year}
-                            onChange={this.handleInputChange}
-                            styles={elementsStyles}
-                        />
-                        {this.renderErrorFor("arrival_year")}
-                    </Stack.Item>
-                </Stack>
-
-                <Stack
-                    horizontal
-                    horizontalAlign="space-between"
-                    styles={{ root: { paddingTop: 20} }}
-                >
-                    <Stack.Item>
-                        <PrimaryButton
-                            text="Guardar y Publicar"
-                            onClick={this.handleSubmit}
-                            allowDisabledFocus
-                        />
-                    </Stack.Item>
-                </Stack>
-
+                                <TextField
+                                    label="Año de llegada a Barcelona"
+                                    title="arrival_year"
+                                    placeholder="ej.: 2005"
+                                    value={this.state.arrival_year}
+                                    onChange={this.handleInputChange}
+                                    styles={elementsStyles}
+                                />
+                                {this.renderErrorFor("arrival_year")}
+                            </Stack.Item>
+                        </Stack>
+                        <Stack
+                            horizontal
+                            horizontalAlign="space-between"
+                            styles={{ root: { paddingTop: 20 } }}
+                        >
+                            <Stack.Item>
+                                <PrimaryButton
+                                    text="Guardar y Publicar"
+                                    onClick={this.handleSubmit}
+                                    allowDisabledFocus
+                                />
+                            </Stack.Item>
+                        </Stack>
+                    </>
+                )}
             </>
         );
     }
@@ -214,11 +235,12 @@ class Settings extends React.Component {
 Settings.defaultProps = {
     name: "",
     surname: "",
-    nationality: countryname[0],
-    city: cityname[0],
+    nationality: {},
+    city: {},
     arrival_year: "",
     age_year: "",
-    feedback: ""
+    feedback: "",
+    dataLoaded: false
 };
 
 Settings.propTypes = {
@@ -228,7 +250,8 @@ Settings.propTypes = {
     city: PropTypes.object,
     arrival_year: PropTypes.string,
     age_year: PropTypes.string,
-    feedback: PropTypes.string
+    feedback: PropTypes.string,
+    dataLoaded: PropTypes.bool
 };
 
 export default Settings;

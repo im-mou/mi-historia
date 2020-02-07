@@ -1,12 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import {STORY_MESSAGES} from "../Utils/Constants";
 
-import { ErrorAlert } from "./include/alert";
+import { StoryShimmer } from "../Shimmers";
+
 import { initializeIcons } from "@uifabric/icons";
+import { ErrorAlert } from "./include/alert";
 import { convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
+
+import { STORY_MESSAGES } from "../Utils/Constants";
 
 import PostControles from "../PostControles";
 import EditorComponent from "../Editor/editorComponent";
@@ -45,7 +48,7 @@ class Editor extends React.Component {
             lastSaved: this.props.lastSaved,
             lastSavedTime: this.props.lastSavedTime,
             errors: [],
-            dataLoaded: false
+            dataLoaded: this.props.dataLoaded
         };
     }
 
@@ -181,38 +184,39 @@ class Editor extends React.Component {
     render() {
         return (
             <>
-                <PostControles
-                    parentState={this.state}
-                    menuProps={menuProps}
-                    toggleSwitch={this.toggleSwitch}
-                    handleSave={this.handleSave}
-                    handlePublish={this.handlePublish}
-                    successText={STORY_MESSAGES.SAVE.SUCCESS}
-                />
-
-                <div className="big-input-container">
-                    <input
-                        type="text"
-                        className="form-control big-input"
-                        name="title"
-                        autoComplete="off"
-                        aria-describedby="tituloHelp"
-                        placeholder="Título de tu escrito"
-                        onChange={this.handleInputChange}
-                        value={this.state.title}
-                    />
-                    {this.renderErrorFor("title")}
-                </div>
-
-                {this.state.dataLoaded ? (
-                    <EditorComponent
-                        onChange={this.handleEditorChange}
-                        body={this.state.body}
-                    />
+                {!this.state.dataLoaded ? (
+                    <StoryShimmer />
                 ) : (
-                    ""
+                    <>
+                        <PostControles
+                            parentState={this.state}
+                            menuProps={menuProps}
+                            toggleSwitch={this.toggleSwitch}
+                            handleSave={this.handleSave}
+                            handlePublish={this.handlePublish}
+                            successText={STORY_MESSAGES.SAVE.SUCCESS}
+                        />
+
+                        <div className="big-input-container">
+                            <input
+                                type="text"
+                                className="form-control big-input"
+                                name="title"
+                                autoComplete="off"
+                                aria-describedby="tituloHelp"
+                                placeholder="Título de tu escrito"
+                                onChange={this.handleInputChange}
+                                value={this.state.title}
+                            />
+                            {this.renderErrorFor("title")}
+                        </div>
+                        <EditorComponent
+                            onChange={this.handleEditorChange}
+                            body={this.state.body}
+                        />
+                        {this.renderErrorFor("body")}
+                    </>
                 )}
-                {this.renderErrorFor("body")}
             </>
         );
     }
@@ -230,7 +234,8 @@ Editor.defaultProps = {
     anonymous: false,
     published: false,
     lastSaved: "",
-    lastSavedTime: null
+    lastSavedTime: null,
+    dataLoaded: false
 };
 
 Editor.propTypes = {
@@ -240,7 +245,8 @@ Editor.propTypes = {
     anonymous: PropTypes.bool,
     published: PropTypes.bool,
     lastSaved: PropTypes.string,
-    lastSavedTime: PropTypes.string
+    lastSavedTime: PropTypes.string,
+    dataLoaded: PropTypes.bool
 };
 
 export default Editor;

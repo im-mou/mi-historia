@@ -288,12 +288,6 @@ a {
   color: #b6b6b6;
 }
 
-.crear-historia .page-header {
-  height: 20vh;
-  text-align: center;
-  margin-bottom: 0px;
-}
-
 .RichEditor-root {
   /* background: #fff; */
   /* border: 1px solid #ddd; */
@@ -390,5 +384,49 @@ a {
   height: 20vh;
   text-align: center;
   margin-bottom: 0px;
+}
+
+.responder-preguntas .ms-TextField {
+  font-family: "Georgia", serif;
+  font-weight: normal;
+  color: #304e60;
+  line-height: 1.2;
+}
+
+.responder-preguntas .ms-TextField .ms-Label {
+  text-transform: capitalize;
+  font-family: "Georgia", serif;
+  font-weight: normal;
+  font-size: 20px;
+  color: #505050;
+  padding: 15px 10px;
+  line-height: 1.2;
+  border: 1px solid #ccc;
+  border-radius: 3px 3px 0 0;
+  border-bottom: 0;
+}
+
+.responder-preguntas .ms-TextField .ms-TextField-fieldGroup {
+  font-size: 18px;
+  padding: 10px 5px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border: 1px solid #ccc;
+}
+
+.responder-preguntas .ms-TextField .ms-TextField-fieldGroup:hover {
+  background-color: #f1e9d6;
+}
+
+.responder-preguntas .ms-TextField.is-active .ms-TextField-fieldGroup {
+  background-color: #f1e9d6;
+  box-shadow: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108);
+}
+
+.responder-preguntas .ms-TextField.is-active .ms-TextField-fieldGroup::after {
+  border: none;
+  border-radius: 3px;
 }
 
