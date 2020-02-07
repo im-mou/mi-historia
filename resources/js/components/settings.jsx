@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import cityname from "../utils/spanishCityNames";
-import countryname from "../utils/countryNames";
+import cityname from "../Utils/spanishCityNames";
+import countryname from "../Utils/countryNames";
 import { SuccessAlert, ErrorAlert } from "./include/alert";
 import {
     PrimaryButton,

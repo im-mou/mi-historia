@@ -1,6 +1,6 @@
 import React from "react";
 import { Editor, EditorState, RichUtils, convertFromRaw } from "draft-js";
-import "./editorComponent.css";
+//import "./editorComponent.css";
 
 class EditorComponent extends React.Component {
     constructor(props) {
@@ -113,7 +113,6 @@ class EditorComponent extends React.Component {
                         editorState={editorState}
                         handleKeyCommand={this.handleKeyCommand}
                         onChange={this.onChange}
-                        autoCapitalize
                         // onTab={this.onTab}
                         placeholder={
                             this.state.isFocused ? "" : "Escribe tu historia..."

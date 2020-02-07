@@ -8,6 +8,7 @@ import ContarHistoria		from './components/pages/contarHistoria';
 import MiHistoria		from './components/pages/miHistoria';
 import MisDatos		from './components/pages/misDatos';
 
+
 class App extends ReactHabitat.Bootstrapper {
 
 	constructor() {
@@ -17,7 +18,7 @@ class App extends ReactHabitat.Bootstrapper {
 		// Create a new container
 		const containerBuilder = new ReactHabitat.ContainerBuilder();
 
-		// Register our components that we want to expose to the DOM
+		//Register our components that we want to expose to the DOM
 		containerBuilder.register(Editor).as('editor');
 		containerBuilder.register(BackendQuestions).as('backend_questions');
 		containerBuilder.register(BackendUsers).as('users');
@@ -25,6 +26,7 @@ class App extends ReactHabitat.Bootstrapper {
 		containerBuilder.register(ContarHistoria).as('contar-historia');
 		containerBuilder.register(MiHistoria).as('mi-historia');
 		containerBuilder.register(MisDatos).as('mis-datos');
+
 
 		// Set the DOM container
 		this.setContainer(containerBuilder.build());

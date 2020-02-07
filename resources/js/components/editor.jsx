@@ -1,28 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import {
-    DefaultButton,
-    PrimaryButton,
-    Stack,
-    Toggle,
-    Text,
-    CommandButton,
-} from "office-ui-fabric-react";
-import { SuccessAlert, ErrorAlert } from "./include/alert";
+import {STORY_MESSAGES} from "../Utils/Constants";
+
+import { ErrorAlert } from "./include/alert";
 import { initializeIcons } from "@uifabric/icons";
 import { convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 
-import TimeAgo from "react-timeago";
-import spanishStrings from "react-timeago/lib/language-strings/es";
-import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
-const formatter = buildFormatter(spanishStrings);
-
-import EditorComponent from "../editor/editorComponent";
-
-initializeIcons();
-const stackTokens = { childrenGap: 10 };
+import PostControles from "../PostControles";
+import EditorComponent from "../Editor/editorComponent";
 const menuProps = {
     items: [
         {
@@ -33,7 +20,7 @@ const menuProps = {
     ],
     directionalHintFixed: true
 };
-const SettingsIcon = { iconName: "Settings" };
+initializeIcons();
 
 class Editor extends React.Component {
     constructor(props) {
@@ -65,6 +52,7 @@ class Editor extends React.Component {
     componentDidMount() {
         let body = "";
         let title = "";
+
         axios
             .get("/api/historia/" + this.state.uuid)
             .then(response => {
@@ -97,7 +85,7 @@ class Editor extends React.Component {
     }
 
     handlePublish() {
-        this.handleRequest("publicar")
+        this.handleRequest("publicar");
     }
 
     handleRequest(url, msg = "") {
@@ -141,7 +129,6 @@ class Editor extends React.Component {
             errors: updateErrors
         });
     }
-
 
     getBodydata(editorState) {
         let empty = false;
@@ -187,77 +174,21 @@ class Editor extends React.Component {
 
     renderErrorFor(field) {
         if (this.hasErrorFor(field)) {
-            return (
-                <ErrorAlert>
-                    {this.state.errors[field][0]}
-                </ErrorAlert>
-            );
+            return <ErrorAlert>{this.state.errors[field][0]}</ErrorAlert>;
         }
     }
 
     render() {
         return (
             <>
-                <div className="controlBar-alert">
-                    {
-                    this.state.published ? 
-                    <SuccessAlert isMultiline={true}>
-                        Tu historia ha sido enviada para una revisión antes de ser publicada!
-                        Muchas gracias por compartir. Siempre estamos aquí para escuharte.
-                    </SuccessAlert>
-                    : ""}
-                </div>
-
-                <Stack
-                    horizontal
-                    minHeight="50"
-                    horizontalAlign="space-between"
-                >
-                    <Stack
-                        horizontalAlign="start"
-                        verticalAlign="bottom"
-                        tokens={stackTokens}
-                    >
-                        <Toggle
-                            label=" "
-                            onText="Anonymous"
-                            offText="Anonymous"
-                            checked={!!this.state.anonymous}
-                            onChange={this.toggleSwitch}
-                        />
-                    </Stack>
-                    <Stack
-                        horizontal
-                        horizontalAlign="end"
-                        verticalAlign="center"
-                        tokens={stackTokens}
-                    >
-                        <Text
-                            variant="small"
-                            styles={{ root: { color: "#666666" } }}
-                        >
-                            {this.state.lastSaved}
-                            <TimeAgo
-                                date={this.state.lastSavedTime}
-                                formatter={formatter}
-                            />
-                        </Text>
-                        <DefaultButton
-                            text="Guardar"
-                            onClick={this.handleSave}
-                            allowDisabledFocus
-                        />
-                        <PrimaryButton
-                            text="Guardar y Publicar"
-                            onClick={this.handlePublish}
-                            allowDisabledFocus
-                        />
-                        <CommandButton
-                            iconProps={SettingsIcon}
-                            menuProps={menuProps}
-                        />
-                    </Stack>
-                </Stack>
+                <PostControles
+                    parentState={this.state}
+                    menuProps={menuProps}
+                    toggleSwitch={this.toggleSwitch}
+                    handleSave={this.handleSave}
+                    handlePublish={this.handlePublish}
+                    successText={STORY_MESSAGES.SAVE.SUCCESS}
+                />
 
                 <div className="big-input-container">
                     <input
@@ -285,6 +216,11 @@ class Editor extends React.Component {
             </>
         );
     }
+}
+
+async function getPost(uid) {
+    const { data } = await axios.get(`/api/historia/${uid}`);
+    return data;
 }
 
 Editor.defaultProps = {

@@ -1,6 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+import { QUESTION_MESSAGES } from "../Utils/Constants";
+import { ErrorAlert } from "./include/alert";
+import PostControles from "../PostControles";
+import Api from "../Utils/Api";
+import { Stack, TextField } from "office-ui-fabric-react";
+
+const menuProps = {
+    items: [
+        {
+            key: "removePost",
+            text: "Eliminar Historia",
+            iconProps: { iconName: "Delete" }
+        }
+    ],
+    directionalHintFixed: true
+};
 
 class Questions extends React.Component {
     constructor(props) {
@@ -11,8 +26,11 @@ class Questions extends React.Component {
         this.handleRequest = this.handleRequest.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.toggleSwitch = this.toggleSwitch.bind(this);
+        this.hasErrorFor = this.hasErrorFor.bind(this);
+        this.renderErrorFor = this.renderErrorFor.bind(this);
 
         this.state = {
+            loading: this.props.loading,
             uuid: this.props.uuid,
             anonymous: this.props.anonymous,
             published: this.props.published,
@@ -24,80 +42,44 @@ class Questions extends React.Component {
     }
 
     componentDidMount() {
-        axios
-            .get("/api/respuestas/"+this.state.uuid)
-            .then(response => {
-                let newQuestions = [];
-                let indexes = [];
-
-                if(response.data.post.answers.length) {
-                    response.data.post.answers.map(q => {
-                        newQuestions["question_" + q.pivot.question_id] = q.pivot.body;
-                        indexes.push({ key: "question_" + q.pivot.question_id, id: q.pivot.question_id });
-                    });
-                } else {
-                    response.data.questions.map(q => {
-                        newQuestions["question_" + q.id] = '';
-                        indexes.push({ key: "question_" + q.id, id: q.id });
-                    });
-                }
-
-                this.setState({
-                    questionsList: response.data.questions,
-                    ...newQuestions,
-                    indexes: indexes,
-                    anonymous: response.data.post.anonymous,
-                    published: response.data.post.published,
-                });
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.setState({
-                        errors: error.response.data.errors
-                    });
-                }
-            });
+        this.getQuestions(this.props.uuid);
     }
 
     handleSave() {
-        this.handleRequest('guardar','Último guardado: ')
+        this.handleRequest("guardar", "Último guardado: ");
     }
 
     handlePublish() {
-        this.setState({
-            published: true,
-        },()=>{
-            this.handleRequest('publicar')
-        })
+        this.setState({ published: true }, () => {
+            this.handleRequest("publicar");
+        });
     }
 
-    handleRequest(url, msg='') {
-
+    async handleRequest(url, msg = "") {
         let answerList = this.state.indexes.map(el => {
             return { question_id: el.id, body: this.state[el.key] };
         });
 
-        const _answers = {
+        const code = {
             uuid: this.state.uuid,
             anonymous: this.state.anonymous,
             published: this.state.published,
-            answers: answerList,
+            answers: answerList
         };
-        axios
-            .post('/api/respuestas/'+url, _answers)
-            .then(response => {
-                this.setState({
-                    lastSaved: msg+response.data.msg,
-                    errors:[]
-                });
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.setState({
-                        errors: error.response.data.errors
-                    });
-                }
+
+        try {
+            const response = await Api.saveAnswers({ url, code });
+            this.setState({
+                lastSaved: msg + response.msg,
+                errors: []
             });
+        } catch (error) {
+            if (error.response) {
+                this.setState({
+                    errors: error.response.data.errors
+                });
+            }
+        }
     }
 
     handleInputChange(e) {
@@ -113,76 +95,118 @@ class Questions extends React.Component {
         });
     }
 
+    async getQuestions(postId) {
+        this.updateQuestionsData(await Api.getQuestions(postId));
+    }
+
+    async saveQuestions() {
+        this.saveQuestionsData(await Api.saveQuestions());
+    }
+
+    updateQuestionsData({ questions, post }) {
+        const { questionStateEls, indexes } = this.generateQuestionStateEls({
+            questions,
+            post
+        });
+
+        this.setState({
+            loading: false,
+            questionsList: questions,
+            ...questionStateEls,
+            indexes: indexes,
+            anonymous: post.anonymous,
+            published: post.published
+        });
+    }
+
+    generateQuestionStateEls({ questions, post }) {
+        let questionStateEls = [];
+        let indexes = [];
+
+        if (post.answers.length) {
+            post.answers.map(q => {
+                questionStateEls["question_" + q.pivot.question_id] =
+                    q.pivot.body;
+                indexes.push({
+                    key: "question_" + q.pivot.question_id,
+                    id: q.pivot.question_id
+                });
+            });
+        } else {
+            questions.map(q => {
+                questionStateEls["question_" + q.id] = "";
+                indexes.push({ key: "question_" + q.id, id: q.id });
+            });
+        }
+
+        return { questionStateEls, indexes };
+    }
+
+    hasErrorFor(field) {
+        return !!this.state.errors[field];
+    }
+
+    renderErrorFor(field) {
+        if (this.hasErrorFor(field)) {
+            return <ErrorAlert>{this.state.errors[field][0]}</ErrorAlert>;
+        }
+    }
+
     render() {
         return (
-            <div>
-                <span>{this.state.lastSaved}</span>
-                <div className="form-group">
-                    <div className="custom-control custom-switch">
-                        <input
-                            checked={this.state.anonymous ? "checked" : ""}
-                            onChange={this.toggleSwitch}
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="anonymousSwitch"
-                        />
-                        <label
-                            className="custom-control-label"
-                            htmlFor="anonymousSwitch"
-                        >
-                            Anonymous
-                        </label>
-                    </div>
-                    <button
-                        onClick={this.handleSave}
-                        className="btn btn-secondary btn-sm"
-                    >
-                        Guardar
-                    </button>
-                    <button
-                        onClick={this.handlePublish}
-                        className="btn btn-success btn-sm"
-                    >
-                        Guardar y Publicar
-                    </button>
-                </div>
-
-                <div className="form-group">
+            <>
+                {this.renderErrorFor("uuid")}
+                {this.renderErrorFor("anonymous")}
+                {this.renderErrorFor("published")}
+                {this.renderErrorFor("answers")}
+                <PostControles
+                    parentState={this.state}
+                    menuProps={menuProps}
+                    toggleSwitch={this.toggleSwitch}
+                    handleSave={this.handleSave}
+                    handlePublish={this.handlePublish}
+                    successText={QUESTION_MESSAGES.SAVE.SUCCESS}
+                />
+                <Stack>
                     {this.state.questionsList.map((q, i) => (
-                        <div className="form-group" key={i}>
-                            <label htmlFor={`body_${q.id}`}>{q.body}</label>
-                            <textarea
-                                className="form-control"
-                                id={`body_${q.id}`}
-                                rows="3"
-                                name={`question_${q.id}`}
-                                onChange={this.handleInputChange}
-                                value={this.state["question_" + q.id]}
-                            />
-                        </div>
+                        <TextField
+                            key={i}
+                            multiline
+                            rows={4}
+                            styles={{
+                                root: { paddingTop: 10, paddingBottom: 10 },
+                                field: {fontSize:18, fontFamily:'Georgia'}
+                            }}
+                            label={q.body}
+                            name={`question_${q.id}`}
+                            onChange={this.handleInputChange}
+                            value={this.state["question_" + q.id]}
+                        />
                     ))}
-                </div>
-            </div>
+                </Stack>
+            </>
         );
     }
 }
 
 Questions.defaultProps = {
-    uuid: _.last((new URL(window.location.href)+'').split("/")),
+    loading: true,
+    uuid: _.last((new URL(window.location.href) + "").split("/")),
     anonymous: false,
     published: false,
-    lastSaved: '',
+    lastSaved: "",
     questionsList: [],
-    indexes: [],
+    indexes: []
 };
 
 Questions.propTypes = {
+    loading: PropTypes.bool,
     uuid: PropTypes.string,
     anonymous: PropTypes.bool,
     published: PropTypes.bool,
     lastSaved: PropTypes.string,
     questionsList: PropTypes.array,
-    indexes: PropTypes.array,
+    indexes: PropTypes.array
 };
 
 export default Questions;
