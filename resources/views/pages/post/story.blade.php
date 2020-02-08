@@ -3,9 +3,8 @@
     
     <div class="ms-Grid" dir="ltr">
         <div class="ms-Grid-row">
-            <div class="ms-Grid-col ms-sm12 ms-md12 ms-lg10 ms-lgPush1 ms-xl8 ms-xlPush2 ms-xxl6 ms-xxlPush3 mi-historia">
-                <!-- <div data-component="mi-historia"></div> -->
-                <div data-component="editor"></div>
+            <div class="ms-Grid-col ms-sm12 ms-md12 ms-lg10 ms-lgPush1 ms-xl8 ms-xlPush2 ms-xxl6 ms-xxlPush3 story">
+                <div data-component="story"></div>
             </div>
         </div>
     </div>

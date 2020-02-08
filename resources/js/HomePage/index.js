@@ -1,24 +1,32 @@
 import React from "react";
-import { Title, Row, Col, Card } from "antd";
+import { CompoundButton, Stack } from "office-ui-fabric-react";
 
-import BigButtom from '../BigButton';
+const stackTokens = { childrenGap: 20 };
 
 const HomePage = function() {
     return (
-        <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
-            <Col span={6} offset={6}>
-
-                    <BigButtom type="default" block={true}>
-                        Quiero contar mi historia
-                    </BigButtom>
-            </Col>
-            <Col span={6}>
-
-                    <BigButtom type="default" block={true}>
-                        Quiero responder a preguntas
-                    </BigButtom>
-            </Col>
-        </Row>
+        <Stack
+            className="component"
+            horizontal
+            horizontalAlign="center"
+            verticalAlign="center"
+            tokens={stackTokens}
+        >
+            <CompoundButton
+                className="ms-depth-4"
+                href="/contar-mi-historia"
+                secondaryText="Redactar un escrito para contar tus experiencias"
+            >
+                Quiero contar mi historia
+            </CompoundButton>
+            <CompoundButton
+                className="ms-depth-4"
+                href="/responder-a-preguntas"
+                secondaryText="Participar en la entrevista y reponder a pregutas"
+            >
+                Quiero responder a preguntas
+            </CompoundButton>
+        </Stack>
     );
 };
 

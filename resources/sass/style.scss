@@ -80,9 +80,9 @@ a {
 }
 
 // import styles modules
-@import './styles-v1/header';
-@import './styles-v1/crear-historia';
-@import './styles-v1/contar-historia';
-@import './styles-v1/mis-datos';
-@import './styles-v1/editor';
-@import './styles-v1/responder-preguntas';
+@import './styles/header';
+@import './styles/homepage';
+@import './styles/story';
+@import './styles/settings';
+@import './styles/editor';
+@import './styles/interview';

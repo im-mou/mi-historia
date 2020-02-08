@@ -8,6 +8,8 @@
 <title>{{ config('app.name', 'Laravel') }}</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <link rel="preload" as="font" href="/fonts/segoeuisl.woff2" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" as="font" href="/fonts/segoeuisl.woff" type="font/woff" crossorigin="anonymous"> -->
 <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 <!-- @if (request()->is('mis-datos'))

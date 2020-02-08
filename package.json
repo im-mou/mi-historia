@@ -28,7 +28,6 @@
         "sass-loader": "^7.1.0"
     },
     "dependencies": {
-        "@uifabric/fluent-theme": "^7.1.14",
         "babel-polyfill": "^6.26.0",
         "draft-js": "^0.11.4",
         "draftjs-to-html": "^0.9.1",
