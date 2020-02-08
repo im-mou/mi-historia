@@ -59,10 +59,10 @@ $logo-color: $customThemePrimary;
 @font-face {
     font-family: "Segoe UI";
     font-weight: 300;
-    //font-display: swap;
-    //src: url("../fonts/SegoeUI/segoeuisl.ttf") format("truetype");
-    src: url('../fonts/SegoeUI/segoeuisl.woff2') format('woff2'),
-        url('../fonts/SegoeUI/segoeuisl.woff') format('woff');
+    font-display: auto;
+    src: url("../fonts/SegoeUI/segoeuisl.ttf") format("truetype");
+    // src: url('../fonts/SegoeUI/segoeuisl.woff2') format('woff2'),
+    //     url('../fonts/SegoeUI/segoeuisl.woff') format('woff');
 }
 // @font-face {
 //     font-family: "Segoe UI";
@@ -83,6 +83,9 @@ $logo-color: $customThemePrimary;
 @font-face {
     font-family: "Heading Pro Wide";
     font-weight: 400;
+    font-display: auto;
     src: url("../fonts/heading-pro-wide/Heading-Pro-Wide-ExtraBold-trial.ttf") format("truetype");
+    // src: url('../fonts/heading-pro-wide/Heading-Pro-Wide-ExtraBold-trial.woff2') format('woff2'),
+    //     url('../fonts/heading-pro-wide/Heading-Pro-Wide-ExtraBold-trial.woff') format('woff');
 }
 

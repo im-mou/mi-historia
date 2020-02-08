@@ -1,7 +1,9 @@
 import React from "react";
-import { Shimmer, ShimmerElementType } from "office-ui-fabric-react";
+import { Shimmer, ShimmerElementType, Stack } from "office-ui-fabric-react";
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
+import { Spinner as SP, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
 import { mergeStyles } from "office-ui-fabric-react/lib/Styling";
+
 const shimmerStyle = mergeStyles({
     padding: 2,
     selectors: {
@@ -10,6 +12,20 @@ const shimmerStyle = mergeStyles({
         }
     }
 });
+
+const spinnerStyles = {
+    root: {
+        minHeight: 500,
+        width: "50%"
+    }
+};
+const spinnerItemStyles = {
+    root: {
+        alignItems: "center",
+        display: "flex",
+        justifyContent: "center",
+    }
+};
 
 export const StoryShimmer = () => {
     return (
@@ -39,12 +55,11 @@ export const StoryShimmer = () => {
     );
 };
 
-export const UserDataShimmer = () => {
-    const line = { type: ShimmerElementType.line, height: 30, width: "45%" };
+export const SettingsShimmer = () => {
+    const line = { type: ShimmerElementType.line, height: 40, width: "45%" };
     const gap = { type: ShimmerElementType.gap, width: "5%" };
     return (
         <Fabric className={shimmerStyle}>
-            <Shimmer shimmerElements={[line, gap, line]} />
             <Shimmer shimmerElements={[line, gap, line]} />
             <Shimmer shimmerElements={[line, gap, line]} />
             <Shimmer shimmerElements={[line, gap, line]} />
@@ -55,5 +70,19 @@ export const UserDataShimmer = () => {
                 ]}
             />
         </Fabric>
+    );
+};
+
+export const Spinner = () => {
+    return (
+        <Stack
+            styles={spinnerStyles}
+            horizontalAlign="center"
+            verticalAlign="center"
+        >
+            <Stack.Item styles={spinnerItemStyles}>
+                <SP size={SpinnerSize.large} />
+            </Stack.Item>
+        </Stack>
     );
 };

@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import { StoryShimmer } from "../Shimmers";
-
 import { initializeIcons } from "@uifabric/icons";
 import { ErrorAlert } from "../Parts/Alert";
 import { convertToRaw } from "draft-js";
@@ -184,39 +182,33 @@ class Editor extends React.Component {
     render() {
         return (
             <>
-                {!this.state.dataLoaded ? (
-                    <StoryShimmer />
-                ) : (
-                    <>
-                        <PostControles
-                            parentState={this.state}
-                            menuProps={menuProps}
-                            toggleSwitch={this.toggleSwitch}
-                            handleSave={this.handleSave}
-                            handlePublish={this.handlePublish}
-                            successText={STORY_MESSAGES.SAVE.SUCCESS}
-                        />
+                <PostControles
+                    parentState={this.state}
+                    menuProps={menuProps}
+                    toggleSwitch={this.toggleSwitch}
+                    handleSave={this.handleSave}
+                    handlePublish={this.handlePublish}
+                    successText={STORY_MESSAGES.SAVE.SUCCESS}
+                />
 
-                        <div className="big-input-container">
-                            <input
-                                type="text"
-                                className="form-control big-input"
-                                name="title"
-                                autoComplete="off"
-                                aria-describedby="tituloHelp"
-                                placeholder="Título de tu escrito"
-                                onChange={this.handleInputChange}
-                                value={this.state.title}
-                            />
-                            {this.renderErrorFor("title")}
-                        </div>
-                        <EditorComponent
-                            onChange={this.handleEditorChange}
-                            body={this.state.body}
-                        />
-                        {this.renderErrorFor("body")}
-                    </>
-                )}
+                <div className="big-input-container">
+                    <input
+                        type="text"
+                        className="form-control big-input"
+                        name="title"
+                        autoComplete="off"
+                        aria-describedby="tituloHelp"
+                        placeholder="Título de tu escrito"
+                        onChange={this.handleInputChange}
+                        value={this.state.title}
+                    />
+                    {this.renderErrorFor("title")}
+                </div>
+                <EditorComponent
+                    onChange={this.handleEditorChange}
+                    body={this.state.body}
+                />
+                {this.renderErrorFor("body")}
             </>
         );
     }

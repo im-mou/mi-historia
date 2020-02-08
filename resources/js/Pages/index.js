@@ -1,19 +1,23 @@
-import React from "react";
-import Header from "../Parts/Header";
+import React, { Suspense, lazy } from "react";
 
-import HomePage from "../HomePage";
-import Editor from "../Editor";
+import Header from "../Parts/Header";
+import { StoryShimmer, SettingsShimmer, Spinner } from "../Shimmers";
+
+const HomePage = lazy(() => import("../HomePage"));
+const Editor = lazy(() => import("../Editor"));
+const Settings = lazy(() => import("../Settings"));
 import Interview from "../Interview";
-import Settings from "../Settings";
 
 export const homepage = () => {
     return (
         <>
-            <Header
-                title="Cuéntanos tu experiencia"
-                subtitle="Puedes escoger cualquiera de las siguientes opciones"
-            />
-            <HomePage />
+            <Suspense fallback={<Spinner />}>
+                <Header
+                    title="Cuéntanos tu experiencia"
+                    subtitle="Puedes escoger cualquiera de las siguientes opciones"
+                />
+                <HomePage />
+            </Suspense>
         </>
     );
 };
@@ -25,7 +29,9 @@ export const story = () => {
                 title="Mi Historia"
                 subtitle="Comparte tus experiencias con tu comunidad."
             />
-            <Editor />
+            <Suspense fallback={<StoryShimmer />}>
+                <Editor />
+            </Suspense>
         </>
     );
 };
@@ -41,7 +47,9 @@ export const settings = () => {
                 title="Mi Datos"
                 subtitle="Aquí puedes modificar tu información"
             />
-            <Settings />
+            <Suspense fallback={<SettingsShimmer />}>
+                <Settings />
+            </Suspense>
         </>
     );
 };

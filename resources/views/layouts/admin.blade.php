@@ -10,8 +10,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script type="text/javascript" src="{{ asset('js/manifest.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('js/vendor.js') }}" defer></script>
+    <!-- <script type="text/javascript" src="{{ asset('js/manifest.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('js/vendor.js') }}" defer></script> -->
     <script type="text/javascript" src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
