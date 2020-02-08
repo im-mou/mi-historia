@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { QUESTION_MESSAGES } from "../Utils/Constants";
-import { ErrorAlert } from "./include/alert";
+import { ErrorAlert } from "../Parts/Alert";
 import PostControles from "../PostControles";
 import Api from "../Utils/Api";
 import { Stack, TextField } from "office-ui-fabric-react";
@@ -17,7 +17,7 @@ const menuProps = {
     directionalHintFixed: true
 };
 
-class Questions extends React.Component {
+class Interview extends React.Component {
     constructor(props) {
         super(props);
 
@@ -190,7 +190,7 @@ class Questions extends React.Component {
     }
 }
 
-Questions.defaultProps = {
+Interview.defaultProps = {
     loading: true,
     uuid: _.last((new URL(window.location.href) + "").split("/")),
     anonymous: false,
@@ -200,7 +200,7 @@ Questions.defaultProps = {
     indexes: []
 };
 
-Questions.propTypes = {
+Interview.propTypes = {
     loading: PropTypes.bool,
     uuid: PropTypes.string,
     anonymous: PropTypes.bool,
@@ -210,4 +210,4 @@ Questions.propTypes = {
     indexes: PropTypes.array
 };
 
-export default Questions;
+export default Interview;

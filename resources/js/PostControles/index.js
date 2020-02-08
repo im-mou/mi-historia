@@ -7,7 +7,7 @@ import {
     Text,
     CommandButton
 } from "office-ui-fabric-react";
-import { SuccessAlert } from "../components/include/alert";
+import { SuccessAlert } from "../Parts/Alert";
 
 import TimeAgo from "react-timeago";
 import spanishStrings from "react-timeago/lib/language-strings/es";

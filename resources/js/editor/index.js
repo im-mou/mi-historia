@@ -5,14 +5,14 @@ import axios from "axios";
 import { StoryShimmer } from "../Shimmers";
 
 import { initializeIcons } from "@uifabric/icons";
-import { ErrorAlert } from "./include/alert";
+import { ErrorAlert } from "../Parts/Alert";
 import { convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 
 import { STORY_MESSAGES } from "../Utils/Constants";
 
 import PostControles from "../PostControles";
-import EditorComponent from "../Editor/editorComponent";
+import EditorComponent from "./editorComponent";
 const menuProps = {
     items: [
         {

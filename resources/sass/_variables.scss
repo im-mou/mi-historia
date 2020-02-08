@@ -51,31 +51,34 @@ $logo-color: $customThemePrimary;
 
 
 // fonts
-@font-face {
-    font-family: "Segoe UI";
-    font-weight: 200;
-    src: url("../fonts/SegoeUI/segoeuil.ttf") format("truetype");
-}
+// @font-face {
+//     font-family: "Segoe UI";
+//     font-weight: 200;
+//     src: url("../fonts/SegoeUI/segoeuil.ttf") format("truetype");
+// }
 @font-face {
     font-family: "Segoe UI";
     font-weight: 300;
-    src: url("../fonts/SegoeUI/segoeuisl.ttf") format("truetype");
+    //font-display: swap;
+    //src: url("../fonts/SegoeUI/segoeuisl.ttf") format("truetype");
+    src: url('../fonts/SegoeUI/segoeuisl.woff2') format('woff2'),
+        url('../fonts/SegoeUI/segoeuisl.woff') format('woff');
 }
-@font-face {
-    font-family: "Segoe UI";
-    font-weight: 400;
-    src: url("../fonts/SegoeUI/segoeui.ttf") format("truetype");
-}
-@font-face {
-    font-family: "Segoe UI";
-    font-weight: 700;
-    src: url("../fonts/SegoeUI/seguisb.ttf") format("truetype");
-}
-@font-face {
-    font-family: "Segoe UI";
-    font-weight: 900;
-    src: url("../fonts/SegoeUI/segoeuib.ttf") format("truetype");
-}
+// @font-face {
+//     font-family: "Segoe UI";
+//     font-weight: 400;
+//     src: url("../fonts/SegoeUI/segoeui.ttf") format("truetype");
+// }
+// @font-face {
+//     font-family: "Segoe UI";
+//     font-weight: 700;
+//     src: url("../fonts/SegoeUI/seguisb.ttf") format("truetype");
+// }
+// @font-face {
+//     font-family: "Segoe UI";
+//     font-weight: 900;
+//     src: url("../fonts/SegoeUI/segoeuib.ttf") format("truetype");
+// }
 
 @font-face {
     font-family: "Heading Pro Wide";

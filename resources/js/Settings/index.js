@@ -6,7 +6,7 @@ import { UserDataShimmer } from "../Shimmers";
 import cityname from "../Utils/spanishCityNames";
 import countryname from "../Utils/countryNames";
 
-import { SuccessAlert, ErrorAlert } from "./include/alert";
+import { SuccessAlert, ErrorAlert } from "../Parts/Alert";
 import {
     PrimaryButton,
     Stack,
@@ -136,7 +136,7 @@ class Settings extends React.Component {
                 )}
 
                 {/* show shimmer is data is not loaded */}
-                {!this.state.dataLoaded ? (
+                {this.state.dataLoaded ? (
                     <UserDataShimmer />
                 ) : (
                     <>
