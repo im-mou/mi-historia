@@ -25,8 +25,15 @@ class PostsController extends Controller
     }
     
     public function index() {
+        // $posts = Post::where('user_id', Auth::user()->id)->get();
+        // return view('pages.posts',['posts'=>$posts]);
+        return view('pages.posts');
+    }
+
+    public function getHistorias()
+    {
         $posts = Post::where('user_id', Auth::user()->id)->get();
-        return view('pages.posts',['posts'=>$posts]);
+        return response()->json($posts);
     }
 
     public function tellAStory($id) {

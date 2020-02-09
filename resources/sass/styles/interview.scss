@@ -3,7 +3,7 @@
     .page-header {
         height: 20vh;
         text-align: center;
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
 
     .ms-TextField {
@@ -12,8 +12,12 @@
         color: #304e60;
         line-height: 1.2;
 
+        &:first-child {
+            margin-top: 20px;
+        }
+
         .ms-Label {
-            text-transform: capitalize;
+            //text-transform: capitalize;
             font-family: "Georgia", serif;
             font-weight: normal;
             font-size: 20px;
@@ -40,8 +44,8 @@
         }
         &.is-active {
             .ms-TextField-fieldGroup {
-                //background-color: white;
-                background-color: darken($color: $white, $amount: 3);
+                background-color: white;
+                //background-color: darken($color: $white, $amount: 3);
                 box-shadow: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132),
                     0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108);
 

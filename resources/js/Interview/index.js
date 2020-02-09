@@ -172,6 +172,7 @@ class Interview extends React.Component {
                         <TextField
                             key={i}
                             multiline
+                            autoAdjustHeight
                             rows={4}
                             styles={{
                                 root: { paddingTop: 10, paddingBottom: 10 },

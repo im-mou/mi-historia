@@ -15,6 +15,7 @@ Auth::routes();
 Route::get('/', 'HomePageController@index');
 
 Route::get('/mis-historias', 'PostsController@index');
+Route::get('/api/mis-historias', 'PostsController@getHistorias');
 Route::get('/contar-mi-historia')->middleware('post.create:story');
 Route::get('/contar-mi-historia/{id?}', 'PostsController@tellAStory')->name('post.story')->middleware('post.filter');
 
