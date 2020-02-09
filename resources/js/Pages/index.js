@@ -1,12 +1,18 @@
 import React, { Suspense, lazy } from "react";
 
 import Header from "../Parts/Header";
-import { StoryShimmer, SettingsShimmer, Spinner } from "../Shimmers";
+import {
+    StoryShimmer,
+    SettingsShimmer,
+    Spinner,
+    MyPostsShimmer
+} from "../Shimmers";
 
 const HomePage = lazy(() => import("../HomePage"));
 const Editor = lazy(() => import("../Editor"));
 const Settings = lazy(() => import("../Settings"));
 import Interview from "../Interview";
+import MyPosts from "../MyPosts";
 
 export const homepage = () => {
     return (
@@ -49,6 +55,20 @@ export const settings = () => {
             />
             <Suspense fallback={<SettingsShimmer />}>
                 <Settings />
+            </Suspense>
+        </>
+    );
+};
+
+export const myPosts = () => {
+    return (
+        <>
+            <Header
+                title="Mi Historias"
+                subtitle="Aquí tienes tus historia bro"
+            />
+            <Suspense fallback={<MyPostsShimmer />}>
+                <MyPosts />
             </Suspense>
         </>
     );

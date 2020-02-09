@@ -214,11 +214,6 @@ class Editor extends React.Component {
     }
 }
 
-async function getPost(uid) {
-    const { data } = await axios.get(`/api/historia/${uid}`);
-    return data;
-}
-
 Editor.defaultProps = {
     uuid: _.last((new URL(window.location.href) + "").split("/")),
     title: "",

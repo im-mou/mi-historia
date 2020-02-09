@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { UserDataShimmer } from "../Shimmers";
-
 import cityname from "../Utils/spanishCityNames";
 import countryname from "../Utils/countryNames";
 

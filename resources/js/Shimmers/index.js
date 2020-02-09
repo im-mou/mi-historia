@@ -86,3 +86,14 @@ export const Spinner = () => {
         </Stack>
     );
 };
+
+export const MyPostsShimmer = () => {
+    const line = { type: ShimmerElementType.line, height: 250, width: "100%" };
+    return (
+        <Fabric className={shimmerStyle}>
+            <Shimmer shimmerElements={[line]} />
+            <Shimmer shimmerElements={[line]} />
+            <Shimmer shimmerElements={[line]} />
+        </Fabric>
+    );
+};

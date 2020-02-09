@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-async function getPosts(query) {
-	const { data } = await axios.get(`/api/searchUser?query=${query}`);
+async function getPosts() {
+	const { data } = await axios.get(`/api/mis-historias`);
 	return data;
 }
 

@@ -1,8 +1,12 @@
 import "babel-polyfill"; // React Habitat requires Object.assign pollyfill for old IE support
 import ReactHabitat from "react-habitat";
-import { homepage, story, interview, settings } from "./Pages";
+import { homepage, story, interview, settings, myPosts } from "./Pages";
 import BackendQuestions from "./Backend/Questions";
 import BackendUsers from "./Backend/Users";
+
+// initialize icons
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+initializeIcons();
 
 class App extends ReactHabitat.Bootstrapper {
     constructor() {
@@ -17,6 +21,7 @@ class App extends ReactHabitat.Bootstrapper {
         containerBuilder.register(story).as("story");
         containerBuilder.register(interview).as("interview");
         containerBuilder.register(settings).as("settings");
+        containerBuilder.register(myPosts).as("my-posts");
 
         // backend
         containerBuilder.register(BackendQuestions).as("backend_questions");
