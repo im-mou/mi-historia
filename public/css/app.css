@@ -435,3 +435,18 @@ a {
   border-radius: 3px;
 }
 
+.my-posts .ms-DocumentCard {
+  max-width: none;
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+  -webkit-transition: all 0.1s;
+  transition: all 0.1s;
+}
+
+.my-posts .ms-DocumentCard:hover {
+  -webkit-transform: scale(1.01, 1.01);
+          transform: scale(1.01, 1.01);
+}
+

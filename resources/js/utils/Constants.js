@@ -1,6 +1,6 @@
 export const POST_TYPES = {
-    STORY: "story",
-    QUESTION: "question"
+    STORY: {key:"story",text:'Historia'},
+    INTERVIEW: {key:"question",text:'Entrevista'}
 };
 
 export const STORY_MESSAGES = {
