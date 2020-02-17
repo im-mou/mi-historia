@@ -9,10 +9,7 @@ import {
 } from "office-ui-fabric-react";
 import { SuccessAlert } from "../Parts/Alert";
 
-import TimeAgo from "react-timeago";
-import spanishStrings from "react-timeago/lib/language-strings/es";
-import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
-const formatter = buildFormatter(spanishStrings);
+import TimeAgo from "../Utils/TimeAgo";
 
 const stackTokens = { childrenGap: 10 };
 const SettingsIcon = { iconName: "Settings" };
@@ -54,10 +51,7 @@ const PostControles = function(props) {
                         styles={{ root: { color: "#666666" } }}
                     >
                         {props.parentState.lastSaved}
-                        <TimeAgo
-                            date={props.parentState.lastSavedTime}
-                            formatter={formatter}
-                        />
+                        <TimeAgo date={props.parentState.lastSavedTime} />
                     </Text>
                     <DefaultButton
                         text="Guardar"

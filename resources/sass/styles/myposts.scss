@@ -2,4 +2,18 @@
     .page-header {
  
     }
+
+    .ms-DocumentCard{
+        max-width: none;
+        margin-bottom: 20px;
+        background-color: white;
+        border-radius: 5px;
+        padding: 10px;
+
+        transition: all 0.1s;
+
+        &:hover {
+            transform: scale(1.01,1.01);
+        }
+    }
 }
