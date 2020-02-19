@@ -34,6 +34,7 @@ npm i --no-bin-links
 
 # Build assets using Laravel Mix
 npm run dev
+npm run prod
 
 # Turn off maintenance mode
 php artisan up
