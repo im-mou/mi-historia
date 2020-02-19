@@ -1,6 +1,4 @@
 {
-    "name": "mi-historia",
-    "homepage": "http://mi-historia.browncomite.com",
     "private": true,
     "scripts": {
         "dev": "npm run development",
