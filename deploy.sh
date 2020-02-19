@@ -33,7 +33,7 @@ php artisan config:cache
 npm i --no-bin-links
 
 # Build assets using Laravel Mix
-npm run production
+npm run dev
 
 # Turn off maintenance mode
 php artisan up
