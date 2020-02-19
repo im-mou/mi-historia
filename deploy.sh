@@ -30,7 +30,7 @@ php artisan config:clear
 php artisan config:cache
 
 # Install node modules
-npm ci --no-bin-links
+npm i --no-bin-links
 
 # Build assets using Laravel Mix
 npm run production
