@@ -5,8 +5,8 @@ cd /var/www/mi-historia
 php artisan down
 
 # Pull the latest changes from the git repository
-# git reset --hard
-# git clean -df
+git reset --hard
+git clean -df
 git pull origin production
 
 # Install/update composer dependecies
